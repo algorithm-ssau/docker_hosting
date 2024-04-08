@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <title>{% block title %}My amazing site{% endblock %}</title>
+
+        <!--     Fonts and icons     -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+        <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+
+        <!-- Nucleo Icons -->
+        <link href="{% static "index/vendor/nucleo/css/nucleo.css" %}" rel="stylesheet" />
+        <link href="{% static "index/vendor/nucleo/css/nucleo-svg.css" %}" rel="stylesheet" />
+
+        <!-- Font Awesome Icons -->
+        <link href="{% static "index/vendor/font-awesome/css/font-awesome.css" %}" rel="stylesheet" />
+
+        <!-- Argon CSS -->
+        <link type="text/css" href="{% static "index/css/argon.min.css" %}" rel="stylesheet">
+
+        <script src="{% static "index/vendor/jquery/jquery.min.js" %}" type="text/javascript"></script>
+
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!--   Core JS Files   -->
+    <script src="{% static "index/vendor/popper/popper.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "index/vendor/bootstrap/bootstrap.min.js" %}" type="text/javascript"></script>
+
+    <!-- Optional plugins -->
+    <script src="{% static "index/vendor/nouislider/js/nouislider.min.js" %}" type="text/javascript"></script>
+
+    <script src="{% static "index/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js" %}" type="text/javascript"></script>
+
+    <script src="{% static "index/js/argon.min.js" %}" type="text/javascript"></script>
+</body>
+</html>

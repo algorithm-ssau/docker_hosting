@@ -6,4 +6,4 @@ from django.shortcuts import render
 # Create your views here.
 def index(request):
     """index.html"""
-    return HttpResponse("hello")
+    return render(request, "cabinet/index.html")
