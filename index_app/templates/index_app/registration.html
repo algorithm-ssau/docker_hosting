@@ -1,58 +1,94 @@
 {% extends "index_app/base.html" %}
-
-{% block title %}Регистрация пользователя{% endblock %}
-
+{% block title %}Регистрация пользователя{%endblock %}
 {% block content %}
-    <div class="section pb-0 section-components">
-        <div class="container mb-5">
+<body class="register-page">
 
-            <div class="section features-1">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-8 mx-auto text-center">
-                            <h3 class="display-3">Хостинг Docker образов</h3>
-                        </div>
+  <div class="wrapper">
+    <section class="section section-shaped section-lg">
+      <div class="shape shape-style-1 bg-gradient-default">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="container pt-lg-7">
+        <div class="row justify-content-center">
+          <div class="col-lg-5">
+            <div class="card bg-secondary shadow border-0">
+              <div class="card-body px-lg-5 py-lg-5">
+                <div class="text-center text-muted mb-4">
+                    <small>User Registration</small>
                     </div>
-                    <div class="row">
-                           <div class="col-md-12 mx-auto text-center">
-                               <p class="lead">Ниже будут приведены возможные конфигурации по оперативке/памяти</p>
-                           </div>
+                <form role="form">
+                  <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"
+                          ><i class="ni ni-hat-3"></i
+                        ></span>
+                      </div>
+                      <input
+                        class="form-control"
+                        placeholder="Name"
+                        type="text"
+                      />
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="info">
-                                <h6 class="info-title text-uppercase">Хостинг 1</h6>
-                                <p class="description opacity-8">Описание описание описание описание описание описание</p>
-                                <p class="description opacity-8">Описание описание описание описание описание описание
-                                    <br>Описание описание описание описание описание описание
-                                </p>
-                                <a href="" class="text-primary">Ссылка
-                                    <i class="ni ni-bold-right text-primary"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="info">
-                                <h6 class="info-title text-uppercase">Хостинг 2</h6>
-                                <p class="description opacity-8">Описание описание описание описание описание описание
-Описание описание описание описание описание описание</p>
-                                <a href="" class="text-primary">Ссылка
-                                        <i class="ni ni-bold-right text-primary"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="info">
-                                <h6 class="info-title text-uppercase">Soon...</h6>
-                                <p class="description opacity-8">Soon...</p>
-                                <a href="javascript:;" class="text-primary">Ссылка
-                                    <i class="ni ni-bold-right text-primary"></i>
-                                </a>
-                            </div>
-                        </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"
+                          ><i class="ni ni-email-83"></i
+                        ></span>
+                      </div>
+                      <input
+                        class="form-control"
+                        placeholder="Email"
+                        type="email"
+                      />
                     </div>
-                </div>
+                  </div>
+                  <div class="form-group focused">
+                    <div class="input-group input-group-alternative">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"
+                          ><i class="ni ni-lock-circle-open"></i
+                        ></span>
+                      </div>
+                      <input
+                        class="form-control"
+                        placeholder="Password"
+                        type="password"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="input-group input-group-alternative">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                      </div>
+                      <input class="form-control" placeholder="Repeat password" type="password">
+                    </div>
+                    <div class="text-pass-is-ok">
+
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <button type="button" class="btn btn-primary mt-4">
+                      Create account
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
+      </div>
+    </section>
+  </div>
+</body>
 {% endblock %}
