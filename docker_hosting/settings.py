@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "index_app.apps.IndexAppConfig",
     "cabinet.apps.CabinetConfig"
+    
 ]
-
+AUTH_USER_MODEL = 'cabinet.CustomUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
