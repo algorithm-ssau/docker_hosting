@@ -1,6 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
+
+class CustomUser(AbstractUser):
+    """пользователь"""
+    
+    #Поля
+    about_user = models.CharField(max_length=200)
+    user_image = models.CharField(max_length=200)
+    def __str__(self):
+        return self.username
 class Hosting(models.Model):
     """Хостинг"""
 
@@ -61,7 +71,7 @@ class user_rent_docker(models.Model):
     """Пользователь арендовал докер """
 
     user = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
     )
     container = models.ForeignKey(
