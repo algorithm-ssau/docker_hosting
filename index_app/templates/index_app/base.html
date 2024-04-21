@@ -25,10 +25,19 @@
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
-<body>
-    <div id="content">
-        {% block content %}{% endblock %}
-    </div>
+<body class="g-sidenav-show   bg-gray-100">
+    <div class="min-height-300 bg-primary position-absolute w-100"></div>
+
+    <main class="main-content position-relative border-radius-lg ">
+        {% include "includes/navbar.html" %}
+        <div id="content">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+        {% include "includes/footer.html" %}
+    </main>
+
 
     <!--   Core JS Files   -->
     <script src="{% static "index/vendor/popper/popper.min.js" %}" type="text/javascript"></script>
