@@ -1,25 +1,30 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
+
+
 # Create your models here.
 
 class CustomUser(AbstractUser):
     """пользователь"""
-    
-    #Поля
+
+    # Поля
     about_user = models.CharField(max_length=200)
     user_image = models.CharField(max_length=200)
+
     def __str__(self):
         return self.username
+
+
 class Hosting(models.Model):
     """Хостинг"""
 
     # Поля
     id = models.AutoField(primary_key=True)
-    port =  models.IntegerField()
+    port = models.IntegerField()
     cores = models.IntegerField()
     address = models.TextField()
-    disk_space =models.IntegerField()
+    disk_space = models.IntegerField()
     memory_space = models.IntegerField()
 
     # Метаданные
@@ -27,15 +32,16 @@ class Hosting(models.Model):
         ordering = ['id']
 
     # Methods
-    #можно прописывать логику типо счета к оплате
+    # можно прописывать логику типо счета к оплате
     def get_absolute_url(self):
         """Возвращает URL-адрес для доступа к определенному экземпляру MyModelName."""
         return reverse('model-detail-view', args=[str(self.id)])
 
     def __str__(self):
         """Строка для представления объекта MyModelName (например, в административной панели и т.д.)."""
-        return self.id +"hosting"
-    
+        return self.id + "hosting"
+
+
 class Container(models.Model):
     """Контейнер """
 
@@ -48,7 +54,7 @@ class Container(models.Model):
     cores = models.IntegerField()
     port = models.IntegerField()
     disk_space = models.IntegerField()
-    memory_space =  models.IntegerField()
+    memory_space = models.IntegerField()
     hosting = models.ForeignKey(
         Hosting,
         on_delete=models.CASCADE,
@@ -65,8 +71,9 @@ class Container(models.Model):
 
     def __str__(self):
         """Строка для представления объекта MyModelName (например, в административной панели и т.д.)."""
-        return self.id+'container'
-    
+        return self.id + 'container'
+
+
 class user_rent_docker(models.Model):
     """Пользователь арендовал докер """
 
@@ -82,6 +89,7 @@ class user_rent_docker(models.Model):
     end_date = models.DateField()
     pay = models.BooleanField()
     cost = models.IntegerField()
+
     # Метаданные
     class Meta:
         ordering = ['user', 'container']
@@ -94,4 +102,3 @@ class user_rent_docker(models.Model):
     def __str__(self):
         """Строка для представления объекта MyModelName (например, в административной панели и т.д.)."""
         return user.str() + container.str()
-    

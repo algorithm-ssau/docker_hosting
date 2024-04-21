@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from cabinet.models import CustomUser
 from index_app.forms import UserRegisterForm
-
+from index_app.forms import UserLoginForm
 
 # Create your views here.
 def index(request):
@@ -22,7 +22,14 @@ def register_user(request):
         new_username = request.POST['username']
         new_password = request.POST['password']
         user = authenticate(request, username=new_username, password=new_password)
+        #CustomUser.objects.
         if user is None:
+            count_name = CustomUser.objects.filter(username=new_username).count()
+            if count_name != 0:
+                return render(request, 'index_app/registration.html', context={"errors":["User with this username already exists."]})
+            count_email = CustomUser.objects.filter(email=email).count()
+            if count_email != 0:
+                return render(request, 'index_app/registration.html', context={"errors": ["User with this email already exists."]})
             # Создание нового пользователя
             new_user = CustomUser.objects.create_user(email=email, username=new_username, password=new_password)
             login(request, new_user)
@@ -42,16 +49,19 @@ def register_user(request):
 def login_user(request):
     """login.html"""
     if request.method == 'POST':
-        username = request.POST['email']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        userform = UserLoginForm(request.POST)
+        if not userform.is_valid():
+            return render(request, 'index_app/login.html', context={"errors": userform.errors})
+        username = request.POST['username']
+        user_password = request.POST['password']
+        user = authenticate(request, username=username, password=user_password)
         if user is not None:
             login(request, user)
             # Перенаправление на страницу успеха.
             return redirect(reverse('cabinet_index'))
         else:
             # Возврат сообщения об ошибке "неверный логин".
-            return render(request, 'invalid_login.html')
+            return render(request, 'index_app/login.html', context={"errors":["User with this name does not exist."]})
     else:
         return render(request, "index_app/login.html")
 
