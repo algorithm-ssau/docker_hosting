@@ -1,0 +1,11 @@
+{% extends "cabinet/base.html" %}
+
+{% block include_sidebar %}
+    {% include "cabinet/includes/sidebar.html" with active_billing="active" %}
+{% endblock %}
+{% block include_navbar %}
+    {% include "cabinet/includes/navbar.html" with title="Billing" %}
+{% endblock %}
+{% block title %}Billing{% endblock %}
+{% block content %}
+{% endblock %}
