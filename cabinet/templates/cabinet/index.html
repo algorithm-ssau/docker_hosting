@@ -1,9 +1,16 @@
 {% extends "cabinet/base.html" %}
 
-{% block title %}Хостинг docker-образов{% endblock %}
+{% block include_sidebar %}
+    {% include "cabinet/includes/sidebar.html" with active_dashboard="active" %}
+{% endblock %}
+{% block include_navbar %}
+    {% include "cabinet/includes/navbar.html" with title="Dashboard" %}
+{% endblock %}
+
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
+    <div class="container-fluid py-4">
         <div class="row">
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                 <div class="card">

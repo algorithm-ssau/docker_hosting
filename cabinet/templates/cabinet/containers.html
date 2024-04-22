@@ -1,0 +1,11 @@
+{% extends "cabinet/base.html" %}
+
+{% block include_sidebar %}
+    {% include "cabinet/includes/sidebar.html" with active_containers="active" %}
+{% endblock %}
+{% block include_navbar %}
+    {% include "cabinet/includes/navbar.html" with title="Containers" %}
+{% endblock %}
+{% block title %}Containers{% endblock %}
+{% block content %}
+{% endblock %}
