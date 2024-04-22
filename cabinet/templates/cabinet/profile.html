@@ -1,0 +1,11 @@
+{% extends "cabinet/base.html" %}
+
+{% block include_sidebar %}
+    {% include "cabinet/includes/sidebar.html" with active_profile="active" %}
+{% endblock %}
+{% block include_navbar %}
+    {% include "cabinet/includes/navbar.html" with title="Profile" %}
+{% endblock %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+{% endblock %}
