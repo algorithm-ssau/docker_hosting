@@ -1,0 +1,53 @@
+{% extends "cabinet/base.html" %}
+
+{% block title %}Хостинг docker-образов{% endblock %}
+
+{% block content %}
+    <div class="ct-example" style="position: relative;padding: 1rem 1rem 2rem 1rem;margin-bottom: -1.25rem;margin-right: 10vh;">
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table align-items-center mb-0">
+                    <thead>
+                    <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">Date of
+                            replenishment:
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                            Changing the balance:
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                            Type operation:
+                        </th>
+                    </tr>
+                    </thead>
+                    {% for billing in billingList %}
+                        <tr>
+                            <div class="d-flex flex-column justify-content-center">
+                                <td class="d-flex px-2">
+                                    <h6 class="text-xs font-weight-bold mb-0">{{ billing.date|date:"d.m.Y H.i.s" }}</h6>
+                                </td>
+                                <td>
+                                    <div class="d-flex px-2">
+                                        {% if billing.changeBalance > 0 %}
+                                            <h6 class="text-xs font-weight-bold mb-0"><font
+                                                    color="green">+{{ billing.changeBalance }}</font></h6>
+                                        {% else %}
+                                            <h6 class="text-xs font-weight-bold mb-0"><font
+                                                    color="red">{{ billing.changeBalance }}</font></h6>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex px-2">
+                                        <h6 class="text-xs font-weight-bold mb-0">{{ billing.typeOperation }}</h6>
+                                    </div>
+                                </td>
+                            </div>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
