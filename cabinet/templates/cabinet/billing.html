@@ -1,6 +1,12 @@
 {% extends "cabinet/base.html" %}
 
-{% block title %}Хостинг docker-образов{% endblock %}
+{% block include_sidebar %}
+    {% include "cabinet/includes/sidebar.html" with active_billing="active" %}
+{% endblock %}
+{% block include_navbar %}
+    {% include "cabinet/includes/navbar.html" with title="Billing" %}
+{% endblock %}
+{% block title %}Billing{% endblock %}
 
 {% block content %}
     <div class="ct-example" style="position: relative;padding: 1rem 1rem 2rem 1rem;margin-bottom: -1.25rem;margin-right: 10vh;">
