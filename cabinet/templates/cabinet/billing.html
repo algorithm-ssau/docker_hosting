@@ -27,26 +27,26 @@
                         </th>
                     </tr>
                     </thead>
-                    {% for billing in billingList %}
+                    {% for billing in billings %}
                         <tr>
                             <div class="d-flex flex-column justify-content-center">
                                 <td class="d-flex px-2">
-                                    <h6 class="text-xs font-weight-bold mb-0">{{ billing.date|date:"d.m.Y H.i.s" }}</h6>
+                                    <h6 class="text-xs font-weight-bold mb-0">{{ billing.done_at|date:"d.m.Y H.i.s" }}</h6>
                                 </td>
                                 <td>
                                     <div class="d-flex px-2">
-                                        {% if billing.changeBalance > 0 %}
+                                        {% if billing.sum > 0 %}
                                             <h6 class="text-xs font-weight-bold mb-0"><font
-                                                    color="green">+{{ billing.changeBalance }}</font></h6>
+                                                    color="green">+{{ billing.sum }}</font></h6>
                                         {% else %}
                                             <h6 class="text-xs font-weight-bold mb-0"><font
-                                                    color="red">{{ billing.changeBalance }}</font></h6>
+                                                    color="red">{{ billing.sum }}</font></h6>
                                         {% endif %}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="d-flex px-2">
-                                        <h6 class="text-xs font-weight-bold mb-0">{{ billing.typeOperation }}</h6>
+                                        <h6 class="text-xs font-weight-bold mb-0">{{ billing.type }}</h6>
                                     </div>
                                 </td>
                             </div>

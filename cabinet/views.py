@@ -3,6 +3,8 @@ from django.contrib.sites import requests
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
+from .models import CustomUser
+from cabinet.models import Billing
 
 
 # Create your views here.
@@ -21,7 +23,11 @@ def profile(request):
 @login_required(login_url='/login')
 def billing(request):
     """billing.html"""
-    return render(request, "cabinet/billing.html")
+    user = request.user
+    userWallet = user.wallet
+    billingsBD = Billing.objects.filter(user=user).all()
+    billings = list(billingsBD.values()) # Преобразование в список словарей
+    return render(request, "cabinet/billing.html", {'billings': billings, 'userWallet': userWallet})
 
 
 @login_required(login_url='/login')
