@@ -47,7 +47,7 @@ pip install -r requirements.txt
 
 
 ## Команда проекта
-- [Владимир Недугов](https://vk.com/gorbacheb) — TeamLead Full-Stack Engineer
-- [Анна Жукова](https://vk.com/id_dreameranna) — Full-Stack Engineer
-- [Алексей Панфилов](https://vk.com/zemlyanikins) — Full-Stack Engineer
-- [Михаил Юрин](https://vk.com/animesborka2007) — Full-Stack Engineer
+- [Владимир Недугов](https://github.com/Gorbacheb) — TeamLead Full-Stack Engineer
+- [Анна Жукова](https://github.com/ann-zhukova) — Full-Stack Engineer
+- [Алексей Панфилов](https://github.com/Zemlyanik1n) — Full-Stack Engineer
+- [Михаил Юрин](https://github.com/Chuxan12) — Full-Stack Engineer
