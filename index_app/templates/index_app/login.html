@@ -4,7 +4,43 @@
 
 {% block content %}
     <body class="login-page">
-    <section class="section section-shaped section-lg"; style="padding-top: 11.9%; padding-bottom: 11.9%; height: 93vh">
+    {% if errors or validation_errors %}
+        <div id="errorModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Error
+                            warning!</h5>
+                    </div>
+                    <div class="modal-body">
+                        {% if validation_errors %}
+                            {% for key, values in validation_errors.items %}
+                                <div class="alert alert-danger" role="alert">
+                                    <p>{{ key }}:{{ values }}</p>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if errors %}
+                            {% for value in errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    <p>Error: {{ value }}</p>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <section class="section section-shaped section-lg" ;
+             style="padding-top: 11.9%; padding-bottom: 11.9%; height: 93vh">
         <div class="shape shape-style-1 bg-gradient-default">
             <span></span>
             <span></span>
@@ -43,7 +79,7 @@
                                 <small>Or sign in with credentials</small>
                             </div>
                             <form action="/login/" method="post">
-                                 {% csrf_token %}
+                                {% csrf_token %}
                                 <div class="form-group mb-3">
                                     <div class="input-group input-group-alternative">
                                         <div class="input-group-prepend">
@@ -61,7 +97,8 @@
                                             <i class="ni ni-lock-circle-open"></i>
                                         </span>
                                         </div>
-                                        <input class="form-control" placeholder="Password" name="password" type="password"/>
+                                        <input class="form-control" placeholder="Password" name="password"
+                                               type="password"/>
                                     </div>
                                 </div>
                                 <div class="custom-control custom-control-alternative custom-checkbox">
@@ -77,17 +114,6 @@
                                     </button>
                                 </div>
                             </form>
-                            {% if validation_errors %}
-                                {% for key, values  in validation_errors.items %}
-                                    <p>{{ key }}:{{ values }} </p>
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if errors %}
-                                {% for value  in errors %}
-                                    <p>Error: {{ value }}</p>
-                                {% endfor %}
-                            {% endif %}
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -102,5 +128,11 @@
             </div>
         </div>
     </section>
+    <script>
+        function closeModal() {
+            var modal = document.getElementById('errorModal');
+            modal.style.display = 'none';  //
+        }
+    </script>
     </body>
 {% endblock %}
