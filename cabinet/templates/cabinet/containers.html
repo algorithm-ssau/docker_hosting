@@ -8,4 +8,121 @@
 {% endblock %}
 {% block title %}Containers{% endblock %}
 {% block content %}
+    <div class="modal" id="changeImageModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Change docker image link.</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'cabinet_containers' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="old_link" value="" readonly>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="New Image Link" id="new_link" name="new_link">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ct-example"
+         style="position: relative;padding: 1rem 1rem 2rem 1rem;margin-bottom: -1.25rem;margin-right: 10vh;">
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table align-items-center mb-0">
+                    <thead>
+                    <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                            Container ID
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                            Tech Specs
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                            Rent
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                            Login Info
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                            Hosting
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                            Link
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                            Docker image link
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for cont, value in containers.items %}
+                        <tr>
+                            <td>
+                                <div class="d-flex px-2 py-1">
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="mb-0 text-sm">{{ value.container_id }}</h6>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">Cores: {{ value.cores }}</h6>
+                                    <h6 class="mb-0 text-sm">RAM: {{ value.memory_space }}</h6>
+                                    <h6 class="mb-0 text-sm">Disk Space: {{ value.disk_space }}</h6>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">Start Date: {{ value.start_date }}</h6>
+                                    <h6 class="mb-0 text-sm">End Date: {{ value.end_date }}</h6>
+                                    <h6 class="mb-0 text-sm">Rent Cost: {{ value.cost }}</h6>
+                                    {% if value.pay > 0 %}
+                                        <h6 class="text-xs font-weight-bold mb-0"><font
+                                                color="green">PAID</font></h6>
+                                    {% else %}
+                                        <h6 class="text-xs font-weight-bold mb-0"><font
+                                                color="red">NOT PAID</font></h6>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">Login: {{ value.login }}</h6>
+                                    <h6 class="mb-0 text-sm">Password: {{ value.password }}</h6>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">{{ value.hosting_id }}</h6>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">{{ value.docker_container_link }}</h6>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">{{ value.docker_image_link }}
+                                        <button type="button" class="btn btn-link" data-bs-toggle="modal"
+                                                data-bs-target="#changeImageModal">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                    </h6>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}

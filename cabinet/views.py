@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites import requests
 from django.http import HttpResponse
@@ -17,10 +19,12 @@ def index(request):
     for cont in conts:
         if cont.container_id in containers:
             containers['cont.container_id'] += list(
-                ContainerStats.objects.select_related('container').filter(container_id=cont.container_id).all().values())
+                ContainerStats.objects.select_related('container').filter(
+                    container_id=cont.container_id).all().values())
         else:
             containers['cont.container_id'] = list(
-                ContainerStats.objects.select_related('container').filter(container_id=cont.container_id).all().values())
+                ContainerStats.objects.select_related('container').filter(
+                    container_id=cont.container_id).all().values())
     return render(request, "cabinet/index.html")
 
 
@@ -45,11 +49,15 @@ def billing(request):
 @login_required(login_url='/login')
 def containers(request):
     """containers.html"""
+    if request.method == 'POST':
+        pass
     user = request.user
-    conts = User_rent_docker.objects.filter(user_id=user.id).all().values('container_id')
+    conts = User_rent_docker.objects.filter(user_id=user.id).values()
     # словарь словарей
     containers = {}
-    for container in conts:
-        containers[container['container_id']] = list(
-            Container.objects.filter(id=container['container_id']).all().values())
+    rents = {}
+    for cont in conts:
+        rent = cont
+        container = list(Container.objects.filter(id=cont['container_id']).values())[0]
+        containers[cont['container_id']] = rent | container
     return render(request, "cabinet/containers.html", {'containers': containers})
