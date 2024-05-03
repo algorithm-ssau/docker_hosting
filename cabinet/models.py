@@ -57,6 +57,7 @@ class Container(models.Model):
     port = models.IntegerField()
     disk_space = models.IntegerField()
     memory_space = models.IntegerField()
+    is_working = models.BooleanField()
     hosting = models.ForeignKey(
         Hosting,
         on_delete=models.CASCADE,

@@ -5,7 +5,8 @@ from django.contrib.sites import requests
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
-from .models import CustomUser
+import socket
+from .models import CustomUser, Hosting
 from cabinet.models import Billing, Container, ContainerStats, User_rent_docker
 
 
@@ -49,8 +50,6 @@ def billing(request):
 @login_required(login_url='/login')
 def containers(request):
     """containers.html"""
-    if request.method == 'POST':
-        pass
     user = request.user
     conts = User_rent_docker.objects.filter(user_id=user.id).values()
     # словарь словарей
@@ -59,5 +58,33 @@ def containers(request):
     for cont in conts:
         rent = cont
         container = list(Container.objects.filter(id=cont['container_id']).values())[0]
-        containers[cont['container_id']] = rent | container
-    return render(request, "cabinet/containers.html", {'containers': containers})
+        # получаем hostname по ip
+        hosting = list(Hosting.objects.filter(id=container['hosting_id']).values('address'))[0]
+        try:
+            hosting['address'] = socket.gethostbyaddr(hosting['address'])[0]
+        except socket.herror:
+            hosting['address'] = "Unknown hostname"
+        containers[cont['container_id']] = rent | container | hosting
+    exclude_ids = [x['container_id'] for x in list(conts.values('container_id'))] # список всех container_id, принадлежащих user
+    available_containers = list(Container.objects.exclude(id__in=exclude_ids).values())
+    return render(request, "cabinet/containers.html", {'containers': containers, 'available_containers': available_containers})
+
+
+@login_required(login_url='/login')
+def change_container_status(request):
+    if request.method == 'POST':
+        container_id = request.POST.get('container_id')
+        container_status = request.POST.get('container_status')
+        # изменить статус контейнера (true/false)
+        Container.objects.filter(id=container_id).update(is_working=container_status)
+    # пока просто перебрасывает на пустую страницу контейнеров, еще раз клацнуть на контейнеры для обновления
+    return render(request, "cabinet/containers.html")
+
+
+def change_image_link(request):
+    if request.method == 'POST':
+        image_link = request.POST.get('image_link')
+        container_id = request.POST.get('container_id')
+        new_image_link = request.POST.get('new_image_link')
+        #проверить линк
+    return render(request, "cabinet/containers.html")

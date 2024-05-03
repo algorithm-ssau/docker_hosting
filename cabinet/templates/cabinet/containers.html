@@ -22,7 +22,8 @@
                             <input type="text" class="form-control" id="old_link" value="" readonly>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="New Image Link" id="new_link" name="new_link">
+                            <input type="text" class="form-control" placeholder="New Image Link" id="new_link"
+                                   name="new_link">
                         </div>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -31,16 +32,41 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="purchaseContainerModal" tabindex="-1" role="dialog"
+         aria-labelledby="purchaseContainerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="purchaseContainerModalLabel">Buy Container</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'cabinet_containers' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="dockerImageLink" class="form-label">Docker Image link</label>
+                            <input type="text" class="form-control" id="dockerImageLink" name="docker_image_link">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Buy</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="ct-example"
-         style="position: relative;padding: 1rem 1rem 2rem 1rem;margin-bottom: -1.25rem;margin-right: 10vh;">
+         style="position: relative;padding: 1rem 1rem 2rem 1rem;margin-bottom: -1.25rem;margin-right: 5vh;">
         <div class="card">
             <div class="table-responsive">
-                <table class="table align-items-center mb-0">
+                <table class="table align-items-center mb-0" style="text-align: center">
                     <thead>
                     <tr>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                        <!--<<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
                             Container ID
-                        </th>
+                        </th>-->
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
                             Tech Specs
                         </th>
@@ -59,18 +85,24 @@
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
                             Docker image link
                         </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                            Container Stats
+                        </th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
+                            Status
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for cont, value in containers.items %}
                         <tr>
-                            <td>
+                            <!--<td>
                                 <div class="d-flex px-2 py-1">
                                     <div class="d-flex flex-column justify-content-center">
                                         <h6 class="mb-0 text-sm">{{ value.container_id }}</h6>
                                     </div>
                                 </div>
-                            </td>
+                            </td>-->
                             <td>
                                 <div class="d-flex flex-column justify-content-center">
                                     <h6 class="mb-0 text-sm">Cores: {{ value.cores }}</h6>
@@ -100,7 +132,7 @@
                             </td>
                             <td>
                                 <div class="d-flex flex-column justify-content-center">
-                                    <h6 class="mb-0 text-sm">{{ value.hosting_id }}</h6>
+                                    <h6 class="mb-0 text-sm">{{ value.address }}</h6>
                                 </div>
                             </td>
                             <td>
@@ -118,11 +150,58 @@
                                     </h6>
                                 </div>
                             </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">стата стата стата
+                                    </h6>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <form method="post" action={% url "change_container_status" %}>
+                                        {% csrf_token %}
+                                        <input type="hidden" name="container_id" value={{ value.container_id }}>
+                                        {% if value.is_working > 0 %}
+                                            <h6 class="text-xs font-weight-bold mb-0"><font
+                                                    color="green">Working</font></h6>
+                                            <button type="submit" class="btn btn-primary" name="container_status"
+                                                    value="False">
+                                                <i class="fas fa-stop"></i>
+                                            </button>
+                                        {% else %}
+                                            <h6 class="text-xs font-weight-bold mb-0"><font
+                                                    color="red">Stopped</font></h6>
+                                            <button type="submit" class="btn btn-primary" name="container_status"
+                                                    value="True"><i
+                                                    class="fas fa-play"></i>
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+    </div>
+
+    <div style="text-align:center">
+        <div style="text-align:center">
+            <div class="mb-3">
+                <label for="selectContainer" class="form-label">Choose available container and buy</label>
+                <select class="form-select" id="selectContainer" name="selected_container">
+                    {% for container in available_containers %}
+                        <option>Cores {{ container.cores }} RAM {{container.memory_space}} Disk Memory {{ container.disk_space }} Cost</option>
+                    {% endfor %}
+                </select>
+                <button type="button" class="btn btn-link" data-bs-toggle="modal"
+                        data-bs-target="#purchaseContainerModal">
+                    Buy Container
+                </button>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
