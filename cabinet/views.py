@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites import requests
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.urls import reverse
 from .models import CustomUser
 from cabinet.models import Billing, Container, ContainerStats, User_rent_docker
+from datetime import datetime
 
 
 # Create your views here.
@@ -17,10 +18,12 @@ def index(request):
     for cont in conts:
         if cont.container_id in containers:
             containers['cont.container_id'] += list(
-                ContainerStats.objects.select_related('container').filter(container_id=cont.container_id).all().values())
+                ContainerStats.objects.select_related('container').filter(
+                    container_id=cont.container_id).all().values())
         else:
             containers['cont.container_id'] = list(
-                ContainerStats.objects.select_related('container').filter(container_id=cont.container_id).all().values())
+                ContainerStats.objects.select_related('container').filter(
+                    container_id=cont.container_id).all().values())
     return render(request, "cabinet/index.html")
 
 
@@ -35,11 +38,21 @@ def profile(request):
 @login_required(login_url='/login')
 def billing(request):
     """billing.html"""
-    user = request.user
-    userWallet = user.wallet
-    billingsBD = Billing.objects.filter(user=user).all()
-    billings = list(billingsBD.values())  # Преобразование в список словарей
-    return render(request, "cabinet/billing.html", {'billings': billings, 'userWallet': userWallet})
+    if request.method == "POST":
+        sum = float(request.POST['sum'])
+        user = request.user
+        user.wallet += sum
+        user.save(update_fields=['wallet'])
+        current_datetime = datetime.now()
+        bill = Billing.objects.create(done_at=current_datetime, user=user, sum=sum, type='top up')
+        bill.save()
+        return redirect(reverse('cabinet_billing'))
+    else:
+        user = request.user
+        userWallet = user.wallet
+        billingsBD = Billing.objects.filter(user=user).all()
+        billings = list(billingsBD.values())  # Преобразование в список словарей
+        return render(request, "cabinet/billing.html", {'billings': billings, 'userWallet': userWallet})
 
 
 @login_required(login_url='/login')
