@@ -23,6 +23,7 @@ class Hosting(models.Model):
 
     # Поля
     id = models.AutoField(primary_key=True)
+    city = models.CharField(max_length=20, default='Samara')
     port = models.IntegerField()
     cores = models.IntegerField()
     address = models.TextField()
@@ -48,7 +49,7 @@ class Container(models.Model):
     """Контейнер """
 
     # Поля
-    id = models.AutoField(primary_key=True)
+    id = models.CharField(primary_key=True, max_length=300)
     docker_image_link = models.CharField(max_length=200, blank=True, null=True)
     docker_container_link = models.CharField(max_length=200, blank=True, null=True)
     login = models.CharField(max_length=45, blank=True, null=True)
@@ -57,6 +58,7 @@ class Container(models.Model):
     port = models.IntegerField()
     disk_space = models.IntegerField()
     memory_space = models.IntegerField()
+    cost = models.FloatField(default=0.0)
     hosting = models.ForeignKey(
         Hosting,
         on_delete=models.CASCADE,
@@ -133,7 +135,7 @@ class ContainerStats(models.Model):
         Container,
         on_delete=models.CASCADE,
     )
-    time = models.DateField(null=False, blank=False)
+    time = models.DateTimeField(null=False, blank=False)
     cpu = models.IntegerField()
     ram = models.IntegerField()
     disk = models.IntegerField()

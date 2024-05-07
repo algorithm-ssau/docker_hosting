@@ -2,14 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
 
-from cabinet.models import CustomUser
+from cabinet.models import CustomUser, Hosting
 from index_app.forms import UserRegisterForm
 from index_app.forms import UserLoginForm
+
 
 # Create your views here.
 def index(request):
     """index.html"""
-    return render(request, "index_app/index.html")
+    hosting = list(Hosting.objects.all().values())  # выводить city cores disk_space memory_space
+    return render(request, "index_app/index.html", {"hosting": hosting})
 
 
 def register_user(request):
@@ -22,14 +24,16 @@ def register_user(request):
         new_username = request.POST['username']
         new_password = request.POST['password']
         user = authenticate(request, username=new_username, password=new_password)
-        #CustomUser.objects.
+        # CustomUser.objects.
         if user is None:
             count_name = CustomUser.objects.filter(username=new_username).count()
             if count_name != 0:
-                return render(request, 'index_app/registration.html', context={"errors":["User with this username already exists."]})
+                return render(request, 'index_app/registration.html',
+                              context={"errors": ["User with this username already exists."]})
             count_email = CustomUser.objects.filter(email=email).count()
             if count_email != 0:
-                return render(request, 'index_app/registration.html', context={"errors": ["User with this email already exists."]})
+                return render(request, 'index_app/registration.html',
+                              context={"errors": ["User with this email already exists."]})
             # Создание нового пользователя
             new_user = CustomUser.objects.create_user(email=email, username=new_username, password=new_password)
             login(request, new_user)
@@ -38,9 +42,8 @@ def register_user(request):
         else:
             # Возврат сообщения об ошибке "такой пользователь существует".
 
-            return render(request, 'index_app/registration.html', context={"errors":
-                ["User with this name already exists."]
-            })
+            return render(request, 'index_app/registration.html',
+                          context={"errors": ["User with this name already exists."]})
     else:
         # Отображение формы входа.
         return render(request, "index_app/registration.html")
@@ -61,9 +64,6 @@ def login_user(request):
             return redirect(reverse('cabinet_index'))
         else:
             # Возврат сообщения об ошибке "неверный логин".
-            return render(request, 'index_app/login.html', context={"errors":["User with this name does not exist."]})
+            return render(request, 'index_app/login.html', context={"errors": ["User with this name does not exist."]})
     else:
         return render(request, "index_app/login.html")
-
-
-
