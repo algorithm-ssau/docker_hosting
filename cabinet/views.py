@@ -5,6 +5,7 @@ from django.contrib.sites import requests
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.shortcuts import redirect
 import socket
 from .models import CustomUser, Hosting
 from cabinet.models import Billing, Container, ContainerStats, User_rent_docker
@@ -72,19 +73,26 @@ def containers(request):
 
 @login_required(login_url='/login')
 def change_container_status(request):
+    """containers.html"""
     if request.method == 'POST':
         container_id = request.POST.get('container_id')
         container_status = request.POST.get('container_status')
-        # изменить статус контейнера (true/false)
-        Container.objects.filter(id=container_id).update(is_working=container_status)
-    # пока просто перебрасывает на пустую страницу контейнеров, еще раз клацнуть на контейнеры для обновления
-    return render(request, "cabinet/containers.html")
+        # изменить статус контейнера (true/false), проверив, что такой контейнер есть у юзера
+        if(User_rent_docker.objects.filter(user_id=request.user.id, container_id=container_id).exists()):
+            Container.objects.filter(id=container_id).update(is_working=container_status)
+    return redirect(request.META.get('HTTP_REFERER'))
 
-
+@login_required(login_url='/login')
 def change_image_link(request):
+    """containers.html"""
     if request.method == 'POST':
         image_link = request.POST.get('image_link')
         container_id = request.POST.get('container_id')
         new_image_link = request.POST.get('new_image_link')
         #проверить линк
     return render(request, "cabinet/containers.html")
+
+@login_required(login_url='/login')
+def buy_new_container(request):
+    """containers.html"""
+    pass
