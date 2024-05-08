@@ -58,6 +58,7 @@ class Container(models.Model):
     port = models.IntegerField()
     disk_space = models.IntegerField()
     memory_space = models.IntegerField()
+    is_working = models.BooleanField(default=False)
     cost = models.FloatField(default=0.0)
     hosting = models.ForeignKey(
         Hosting,
