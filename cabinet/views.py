@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.shortcuts import redirect
-import socket
+from cabinet.forms import ImageLinkForm
 from .models import CustomUser, Hosting
 from cabinet.models import Billing, Container, ContainerStats, User_rent_docker
 from datetime import datetime
@@ -66,19 +66,15 @@ def containers(request):
     conts = User_rent_docker.objects.filter(user_id=user.id).values()
     # словарь словарей
     containers = {}
-    rents = {}
+    hosting = {}
     for cont in conts:
         rent = cont
-        container = list(Container.objects.filter(id=cont['container_id']).values())[0]
-        # получаем hostname по ip
-        hosting = list(Hosting.objects.filter(id=container['hosting_id']).values('address'))[0]
-        try:
-            hosting['address'] = socket.gethostbyaddr(hosting['address'])[0]
-        except socket.herror:
-            hosting['address'] = "Unknown hostname"
+        container_info = Container.objects.filter(id=cont['container_id'])
+        container = list(container_info.values())[0]
+        hosting['city'] = container_info.first().hosting.city
         containers[cont['container_id']] = rent | container | hosting
     exclude_ids = [x['container_id'] for x in list(conts.values('container_id'))] # список всех container_id, принадлежащих user
-    available_containers = list(Container.objects.exclude(id__in=exclude_ids).values())
+    available_containers = list(Container.objects.exclude(id__in=exclude_ids).values('cores', 'cost', 'disk_space', 'memory_space', 'id'))
     return render(request, "cabinet/containers.html", {'containers': containers, 'available_containers': available_containers})
 
 
@@ -103,7 +99,30 @@ def change_image_link(request):
         #проверить линк
     return render(request, "cabinet/containers.html")
 
+
 @login_required(login_url='/login')
 def buy_new_container(request):
     """containers.html"""
-    pass
+    if request.method == "POST":
+        container_form = ImageLinkForm(request.POST)
+        cont_id = request.POST.get('selected_container_id')
+        if not container_form.is_valid():
+            context = {"validation_errors": container_form.errors}
+            # алерты необходимо добавить id, ссылку
+        if(User_rent_docker.objects.filter(user_id=request.user.id, container_id=cont_id).exists()):
+            #ошибка, у юзера есть такой контейнер
+            pass
+        cost = Container.objects.get(id=cont_id).cost
+        if(User.objects.get(id=request.user.id).wallet < cost):
+            # ошибка, недостаточно средств на счете
+            pass
+        if(False):
+            pass
+            #проверить валидность ссылки docker контейнера
+        # пройдены все проверки
+        user = User.objects.get(id=request.user.id)
+        user.wallet -= cost
+        user.save(update_fields=["wallet"])
+        #User_rent_docker.objects.create()
+        #Billing.objects.create()
+    return redirect(request.META.get('HTTP_REFERER'))

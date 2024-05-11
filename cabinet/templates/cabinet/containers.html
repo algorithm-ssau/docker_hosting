@@ -42,11 +42,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'cabinet_containers' %}">
+                    <form method="post" action="{% url 'buy_new_container' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="dockerImageLink" class="form-label">Docker Image link</label>
                             <input type="text" class="form-control" id="dockerImageLink" name="docker_image_link">
+                            <input type="hidden" id="selectedContainerId" name="selected_container_id">
                         </div>
                         <button type="submit" class="btn btn-primary">Buy</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -55,7 +56,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="ct-example"
          style="position: relative;padding: 1rem 1rem 2rem 1rem;margin-bottom: -1.25rem;margin-right: 5vh;">
@@ -96,13 +96,6 @@
                     <tbody>
                     {% for cont, value in containers.items %}
                         <tr>
-                            <!--<td>
-                                <div class="d-flex px-2 py-1">
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="mb-0 text-sm">{{ value.container_id }}</h6>
-                                    </div>
-                                </div>
-                            </td>-->
                             <td>
                                 <div class="d-flex flex-column justify-content-center">
                                     <h6 class="mb-0 text-sm">Cores: {{ value.cores }}</h6>
@@ -132,7 +125,7 @@
                             </td>
                             <td>
                                 <div class="d-flex flex-column justify-content-center">
-                                    <h6 class="mb-0 text-sm">{{ value.address }}</h6>
+                                    <h6 class="mb-0 text-sm">{{ value.city }}</h6>
                                 </div>
                             </td>
                             <td>
@@ -192,16 +185,31 @@
             <div class="mb-3">
                 <label for="selectContainer" class="form-label">Choose available container and buy</label>
                 <select class="form-select" id="selectContainer" name="selected_container">
+                    <option value="" disabled selected>Choose container</option>
                     {% for container in available_containers %}
-                        <option>Cores {{ container.cores }} RAM {{container.memory_space}} Disk Memory {{ container.disk_space }} Cost</option>
+                        <option value="{{ container.id }}" data-container-id="{{ container.id }}">
+                            Cores {{ container.cores }}
+                            RAM {{ container.memory_space }} Disk Memory {{ container.disk_space }}
+                            Cost {{ container.cost }} </option>
                     {% endfor %}
                 </select>
                 <button type="button" class="btn btn-link" data-bs-toggle="modal"
-                        data-bs-target="#purchaseContainerModal">
+                        data-bs-target="#purchaseContainerModal" disabled id="buyContainerButton">
                     Buy Container
                 </button>
             </div>
         </div>
-
     </div>
+    <script>
+        document.getElementById('selectContainer').addEventListener('change', function () {
+            var submitButton = document.getElementById('buyContainerButton');
+            var selectedOption = this.options[this.selectedIndex];
+            const containerId = selectedOption.getAttribute('data-container-id');
+            const containerIdHidden = document.getElementById('selectedContainerId');
+            containerIdHidden.value = containerId;
+            if (containerIdHidden.value !== "") {
+                submitButton.removeAttribute('disabled');
+            }
+        });
+    </script>
 {% endblock %}
