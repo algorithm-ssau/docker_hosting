@@ -3,7 +3,7 @@ from itertools import chain
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites import requests
 from django.http import HttpResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.shortcuts import redirect
 from cabinet.forms import ImageLinkForm
@@ -73,9 +73,13 @@ def containers(request):
         container = list(container_info.values())[0]
         hosting['city'] = container_info.first().hosting.city
         containers[cont['container_id']] = rent | container | hosting
-    exclude_ids = [x['container_id'] for x in list(conts.values('container_id'))] # список всех container_id, принадлежащих user
-    available_containers = list(Container.objects.exclude(id__in=exclude_ids).values('cores', 'cost', 'disk_space', 'memory_space', 'id'))
-    return render(request, "cabinet/containers.html", {'containers': containers, 'available_containers': available_containers})
+    exclude_ids = [x['container_id'] for x in
+                   list(conts.values('container_id'))]  # список всех container_id, принадлежащих user
+    available_containers = list(
+        Container.objects.exclude(id__in=exclude_ids).values('cores', 'cost', 'disk_space', 'memory_space', 'id'))
+    return render(request, "cabinet/containers.html", {'containers': containers,
+                                                       'available_containers': available_containers,
+                                                       "errors": ["User with this email already exists."]})
 
 
 @login_required(login_url='/login')
@@ -85,19 +89,31 @@ def change_container_status(request):
         container_id = request.POST.get('container_id')
         container_status = request.POST.get('container_status')
         # изменить статус контейнера (true/false), проверив, что такой контейнер есть у юзера
-        if(User_rent_docker.objects.filter(user_id=request.user.id, container_id=container_id).exists()):
+        if (User_rent_docker.objects.filter(user_id=request.user.id, container_id=container_id).exists()):
             Container.objects.filter(id=container_id).update(is_working=container_status)
     return redirect(request.META.get('HTTP_REFERER'))
+
 
 @login_required(login_url='/login')
 def change_image_link(request):
     """containers.html"""
     if request.method == 'POST':
-        image_link = request.POST.get('image_link')
-        container_id = request.POST.get('container_id')
-        new_image_link = request.POST.get('new_image_link')
-        #проверить линк
-    return render(request, "cabinet/containers.html")
+        container_id = request.POST.get('container_id_image')
+        new_image_link = request.POST.get('new_link')
+        container_form = ImageLinkForm(request.POST)
+        if not container_form.is_valid():
+            context = {"validation_errors": container_form.errors}
+            # алерты необходимо добавить id, ссылку
+        if (False):
+            # проверить принадлежность контейнера юзеру
+            if (False):
+                # проверить нормальность линка на докерхаб
+                pass
+            # в случае успеха менять ссылку
+            # container = Container.objects.get(id=container_id)
+            # container.docker_image_link = new_image_link
+            # container.save(update_fields=["docker_image_link"])
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required(login_url='/login')
@@ -109,20 +125,20 @@ def buy_new_container(request):
         if not container_form.is_valid():
             context = {"validation_errors": container_form.errors}
             # алерты необходимо добавить id, ссылку
-        if(User_rent_docker.objects.filter(user_id=request.user.id, container_id=cont_id).exists()):
-            #ошибка, у юзера есть такой контейнер
+        if (User_rent_docker.objects.filter(user_id=request.user.id, container_id=cont_id).exists()):
+            # ошибка, у юзера есть такой контейнер
             pass
         cost = Container.objects.get(id=cont_id).cost
-        if(User.objects.get(id=request.user.id).wallet < cost):
+        if (User.objects.get(id=request.user.id).wallet < cost):
             # ошибка, недостаточно средств на счете
             pass
-        if(False):
+        if (False):
             pass
-            #проверить валидность ссылки docker контейнера
+            # проверить валидность ссылки docker контейнера
         # пройдены все проверки
         user = User.objects.get(id=request.user.id)
         user.wallet -= cost
         user.save(update_fields=["wallet"])
-        #User_rent_docker.objects.create()
-        #Billing.objects.create()
+        # User_rent_docker.objects.create()
+        # Billing.objects.create()
     return redirect(request.META.get('HTTP_REFERER'))

@@ -8,6 +8,42 @@
 {% endblock %}
 {% block title %}Containers{% endblock %}
 {% block content %}
+    <div class="modal" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Error warning!</h5>
+                </div>
+                <div class="modal-body">
+                    {% if validation_errors %}
+                        {% for key, values in validation_errors.items %}
+                            <div class="alert" role="alert" style="background-color: #f75676; border-color: #f75676;
+                                 color: #fff; font-size: 0.875rem; padding: 1rem 1.5rem;
+                                  border: 0; border-radius: 0.25rem;">
+                                <p>{{ key }}:{{ values }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if errors %}
+                        {% for value in errors %}
+                            <div class="alert" role="alert" style="background-color: #f75676; border-color: #f75676;
+                                 color: #fff; font-size: 0.875rem; padding: 1rem 1.5rem;
+                                  border: 0; border-radius: 0.25rem;">
+                                <p>Error: {{ value }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="modal" id="changeImageModal" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -16,7 +52,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">Change docker image link.</h5>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'cabinet_containers' %}">
+                    <form method="post" action="{% url 'change_image_link' %}">
                         {% csrf_token %}
                         <div class="form-group">
                             <input type="text" class="form-control" id="old_link" value="" readonly>
@@ -24,6 +60,7 @@
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="New Image Link" id="new_link"
                                    name="new_link">
+                            <input type="hidden" id="selectedContainerIdImage" name="container_id_image">
                         </div>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -32,7 +69,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal" id="purchaseContainerModal" tabindex="-1" role="dialog"
          aria-labelledby="purchaseContainerModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -56,7 +92,6 @@
             </div>
         </div>
     </div>
-
     <div class="ct-example"
          style="position: relative;padding: 1rem 1rem 2rem 1rem;margin-bottom: -1.25rem;margin-right: 5vh;">
         <div class="card">
@@ -136,8 +171,10 @@
                             <td>
                                 <div class="d-flex flex-column justify-content-center">
                                     <h6 class="mb-0 text-sm">{{ value.docker_image_link }}
-                                        <button type="button" class="btn btn-link" data-bs-toggle="modal"
-                                                data-bs-target="#changeImageModal">
+                                        <button type="button" class="btn btn-link change-image-link-modal-button"
+                                                data-bs-toggle="modal" data-bs-target="#changeImageModal"
+                                                data-id="{{ value.container_id }}"
+                                                data-image-link="{{ value.docker_image_link }}">
                                             <i class="fas fa-pencil-alt"></i>
                                         </button>
                                     </h6>
@@ -145,7 +182,7 @@
                             </td>
                             <td>
                                 <div class="d-flex flex-column justify-content-center">
-                                    <h6 class="mb-0 text-sm">стата стата стата
+                                    <h6 class="mb-0 text-sm">
                                     </h6>
                                 </div>
                             </td>
@@ -179,7 +216,6 @@
             </div>
         </div>
     </div>
-
     <div style="text-align:center">
         <div style="text-align:center">
             <div class="mb-3">
@@ -210,6 +246,25 @@
             if (containerIdHidden.value !== "") {
                 submitButton.removeAttribute('disabled');
             }
+        });
+
+        $('#changeImageModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var imageLink = button.data('image-link');
+            var modal = $(this);
+            modal.find('#old_link').val(imageLink);
+            modal.find('#selectedContainerIdImage').val(id);
+        });
+
+        function closeModal() {
+            $('#errorModal').hide()
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            {% if errors or validation_errors %}
+            $('#errorModal').show()
+            {% endif %}
         });
     </script>
 {% endblock %}
