@@ -1,0 +1,115 @@
+{% extends "cabinet/base.html" %}
+
+{% block include_sidebar %}
+    {% include "cabinet/includes/sidebar.html" with active_telemetry="active" %}
+{% endblock %}
+{% block include_navbar %}
+    {% include "cabinet/includes/navbar.html" with title="Telemetry" %}
+{% endblock %}
+{% block title %}Telemetry{% endblock %}
+
+
+{% block content %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <div class="row mt-4">
+        <div class="col-lg-5">
+            <div class="card card-carousel overflow-hidden h-100 p-0">
+                <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
+                    <div class="card z-index-2 h-100">
+                        <div id="chart_div">
+                            <script type="text/javascript">
+                                google.charts.load('current', {'packages': ['corechart']});
+                                google.charts.setOnLoadCallback(drawChart);
+
+                                function drawChart() {
+                                    var data = google.visualization.arrayToDataTable([
+                                        ['60 second', 'is used%'],
+                                        ['1', 50],
+                                        ['2', 24],
+                                        ['3', 54],
+                                        ['4', 14]
+                                    ]);
+
+                                    var options = {
+                                        title: 'CPU',
+                                        hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
+                                        vAxis: {minValue: 0}
+                                    };
+
+                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+                                    chart.draw(data, options);
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card card-carousel overflow-hidden h-100 p-0">
+                <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
+                    <div class="card z-index-2 h-100">
+                        <div id="chart_div1">
+                            <script type="text/javascript">
+                                google.charts.load('current', {'packages': ['corechart']});
+                                google.charts.setOnLoadCallback(drawChart);
+
+                                function drawChart() {
+                                    var data = google.visualization.arrayToDataTable([
+                                        ['60 second', 'is used%'],
+                                        ['1', 50],
+                                        ['2', 24],
+                                        ['3', 54],
+                                        ['4', 14]
+                                    ]);
+
+                                    var options = {
+                                        title: 'RAM',
+                                        hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
+                                        vAxis: {minValue: 0}
+                                    };
+
+                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div1'));
+                                    chart.draw(data, options);
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card card-carousel overflow-hidden h-100 p-0">
+                <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
+                    <div class="card z-index-2 h-100">
+                        <div id="chart_div2">
+                            <script type="text/javascript">
+                                google.charts.load('current', {'packages': ['corechart']});
+                                google.charts.setOnLoadCallback(drawChart);
+
+                                function drawChart() {
+                                    var data = google.visualization.arrayToDataTable([
+                                        ['60 second', 'is used%'],
+                                        ['1', 50],
+                                        ['2', 24],
+                                        ['3', 54],
+                                        ['4', 14]
+                                    ]);
+
+                                    var options = {
+                                        title: 'DISK',
+                                        hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
+                                        vAxis: {minValue: 0}
+                                    };
+
+                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div2'));
+                                    chart.draw(data, options);
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

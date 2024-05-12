@@ -107,3 +107,8 @@ def change_image_link(request):
 def buy_new_container(request):
     """containers.html"""
     pass
+
+@login_required(login_url='/login')
+def telemetry(request):
+    """containers.html"""
+    return render(request, "cabinet/telemetry.html")
