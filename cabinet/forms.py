@@ -16,5 +16,5 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class ImageLinkForm(forms.Form):
-    docker_image_link = forms.CharField(required=True, min_length=2)
-    selected_container_id = forms.CharField(required=True, min_length=2)
+    new_link = forms.CharField(required=True, min_length=2)
+    container_id_image = forms.CharField(required=True, min_length=2)
