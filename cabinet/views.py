@@ -111,7 +111,7 @@ def change_image_link(request):
         if (User_rent_docker.objects.filter(user_id=request.user.id,
                                             container_id=container_id,
                                             pay=True).exists()):  # контейнер принадлежит юзеру и оплачен
-            if (False):
+            if (True):
                 # проверить нормальность линка на докерхаб
                 container = Container.objects.get(id=container_id)
                 container.docker_image_link = new_image_link
@@ -139,7 +139,7 @@ def buy_new_container(request):
             # ошибка, у юзера есть такой контейнер
             pass
         cost = Container.objects.get(id=cont_id).cost
-        if (User.objects.get(id=request.user.id).wallet < cost):
+        if (request.user.wallet < cost):
             # ошибка, недостаточно средств на счете
             pass
         if (False):
