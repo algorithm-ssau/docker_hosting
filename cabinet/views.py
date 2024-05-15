@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from cabinet.forms import ImageLinkForm
 from .models import CustomUser, Hosting
-from cabinet.models import Billing, Container, ContainerStats, User_rent_docker
+from cabinet.models import Billing, Container, ContainerStats, User_rent_docker, ContainerConfig
 from datetime import datetime
 import docker
 
@@ -74,11 +74,13 @@ def containers(request):
         containers[cont['container_id']] = rent | container | hosting
 
     # необходимо исключить id контейнеров, находящихся в пользовании другими юзерами
-    exclude_ids = [x['container_id'] for x in
-                   list(conts.values('container_id'))]  # список всех container_id, принадлежащих user
-    available_containers = list(
-        Container.objects.exclude(id__in=exclude_ids).values('cores', 'cost', 'disk_space', 'memory_space', 'id'))
+    #exclude_ids = [x['container_id'] for x in
+                  # list(conts.values('container_id'))]  # список всех container_id, принадлежащих user
+    #available_containers = list(
+        #Container.objects.exclude(id__in=exclude_ids).values('cores', 'cost', 'disk_space', 'memory_space', 'id'))
 
+    available_containers = list(ContainerConfig.objects.all().values('cores', 'cost', 'disk_space', 'memory_space', 'id'))
+    
     errors = []
     validation_errors = {}
     return render(request, "cabinet/containers.html", {'containers': containers,
@@ -135,10 +137,7 @@ def buy_new_container(request):
         if not container_form.is_valid():
             context = {"validation_errors": container_form.errors}
             # необходимо добавить id, ссылку
-        if (User_rent_docker.objects.filter(user_id=request.user.id, container_id=cont_id).exists()):
-            # ошибка, у юзера есть такой контейнер
-            pass
-        cost = Container.objects.get(id=cont_id).cost
+        cost = ContainerConfig.objects.get(id=cont_id).cost
         if (request.user.wallet < cost):
             # ошибка, недостаточно средств на счете
             pass
@@ -146,9 +145,13 @@ def buy_new_container(request):
             pass
             # проверить валидность ссылки docker контейнера
         # пройдены все проверки
-        user = User.objects.get(id=request.user.id)
-        user.wallet -= cost
-        user.save(update_fields=["wallet"])
+        user = request.user
+        #user.wallet -= cost
+        #user.save(update_fields=["wallet"])
+        #создать контейнер через python docker sdk 
+        #добавить его в таблицу container 
+        #добавить связь с юзером 
+        #создать объект покупки 
         # User_rent_docker.objects.create()
         # Billing.objects.create()
     return redirect(request.META.get('HTTP_REFERER'))
