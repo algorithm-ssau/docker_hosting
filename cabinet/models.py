@@ -152,3 +152,26 @@ class ContainerStats(models.Model):
     def __str__(self):
         """Строка для представления объекта MyModelName (например, в административной панели и т.д.)."""
         return 'Container_' + str(self.container.id) + 'InTime_' + str(self.time)
+
+
+class ContainerConfig(models.Model):
+    id = models.AutoField(primary_key=True)
+    cores = models.IntegerField()
+    disk_space = models.IntegerField()
+    memory_space = models.IntegerField()
+    cost = models.FloatField(default=0.0)
+    hosting = models.ForeignKey(
+        Hosting,
+        on_delete=models.CASCADE,
+    )
+    
+    class Meta:
+        ordering = ['id']
+
+    def get_absolute_url(self):
+        """Возвращает URL-адрес для доступа к определенному экземпляру MyModelName."""
+        return reverse('model-detail-view', args=[str(self.id)])
+
+    def __str__(self):
+        """Строка для представления объекта MyModelName (например, в административной панели и т.д.)."""
+        return 'Container_Config_' + str(self.id)
