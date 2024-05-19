@@ -11,105 +11,106 @@
 
 {% block content %}
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <div class="row mt-4">
-        <div class="col-lg-5">
-            <div class="card card-carousel overflow-hidden h-100 p-0">
-                <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-                    <div class="card z-index-2 h-100">
-                        <div id="chart_div">
-                            <script type="text/javascript">
-                                google.charts.load('current', {'packages': ['corechart']});
-                                google.charts.setOnLoadCallback(drawChart);
+        <div class="row mt-4 "style="position: relative;padding: 1rem 1rem 2rem 1rem;margin-bottom: -1.25rem;margin-right: 10vh;">
+            <h6 class="font-weight-bolder text-black mb-0">Dashboard</h6>
+            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+                <div class="card card-carousel overflow-hidden h-100 p-0">
+                    <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
+                        <div class="card z-index-2 h-100">
+                            <div id="chart_div">
+                                <script type="text/javascript">
+                                    google.charts.load('current', {'packages': ['corechart']});
+                                    google.charts.setOnLoadCallback(drawChart);
 
-                                function drawChart() {
-                                    var data = google.visualization.arrayToDataTable([
-                                        ['60 second', 'is used%'],
-                                        ['1', 50],
-                                        ['2', 24],
-                                        ['3', 54],
-                                        ['4', 14]
-                                    ]);
+                                    function drawChart() {
+                                        var data = google.visualization.arrayToDataTable([
+                                            ['60 second', 'is used%'],
+                                            ['1', 50],
+                                            ['2', 24],
+                                            ['3', 54],
+                                            ['4', 14]
+                                        ]);
 
-                                    var options = {
-                                        title: 'CPU',
-                                        hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
-                                        vAxis: {minValue: 0}
-                                    };
+                                        var options = {
+                                            title: 'CPU',
+                                            hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
+                                            vAxis: {minValue: 0}
+                                        };
 
-                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-                                    chart.draw(data, options);
-                                }
-                            </script>
+                                        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+                                        chart.draw(data, options);
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+                <div class="card card-carousel overflow-hidden h-100 p-0">
+                    <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
+                        <div class="card z-index-2 h-100">
+                            <div id="chart_div1">
+                                <script type="text/javascript">
+                                    google.charts.load('current', {'packages': ['corechart']});
+                                    google.charts.setOnLoadCallback(drawChart);
+
+                                    function drawChart() {
+                                        var data = google.visualization.arrayToDataTable([
+                                            ['60 second', 'is used%'],
+                                            ['1', 50],
+                                            ['2', 24],
+                                            ['3', 54],
+                                            ['4', 14]
+                                        ]);
+
+                                        var options = {
+                                            title: 'RAM',
+                                            hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
+                                            vAxis: {minValue: 0}
+                                        };
+
+                                        var chart = new google.visualization.AreaChart(document.getElementById('chart_div1'));
+                                        chart.draw(data, options);
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+                <div class="card card-carousel overflow-hidden h-100 p-0">
+                    <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
+                        <div class="card z-index-2 h-100">
+                            <div id="chart_div2">
+                                <script type="text/javascript">
+                                    google.charts.load('current', {'packages': ['corechart']});
+                                    google.charts.setOnLoadCallback(drawChart);
+
+                                    function drawChart() {
+                                        var data = google.visualization.arrayToDataTable([
+                                            ['60 second', 'is used%'],
+                                            ['1', 50],
+                                            ['2', 24],
+                                            ['3', 54],
+                                            ['4', 14]
+                                        ]);
+
+                                        var options = {
+                                            title: 'DISK',
+                                            hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
+                                            vAxis: {minValue: 0}
+                                        };
+
+                                        var chart = new google.visualization.AreaChart(document.getElementById('chart_div2'));
+                                        chart.draw(data, options);
+                                    }
+                                </script>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
-            <div class="card card-carousel overflow-hidden h-100 p-0">
-                <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-                    <div class="card z-index-2 h-100">
-                        <div id="chart_div1">
-                            <script type="text/javascript">
-                                google.charts.load('current', {'packages': ['corechart']});
-                                google.charts.setOnLoadCallback(drawChart);
-
-                                function drawChart() {
-                                    var data = google.visualization.arrayToDataTable([
-                                        ['60 second', 'is used%'],
-                                        ['1', 50],
-                                        ['2', 24],
-                                        ['3', 54],
-                                        ['4', 14]
-                                    ]);
-
-                                    var options = {
-                                        title: 'RAM',
-                                        hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
-                                        vAxis: {minValue: 0}
-                                    };
-
-                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div1'));
-                                    chart.draw(data, options);
-                                }
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-5">
-            <div class="card card-carousel overflow-hidden h-100 p-0">
-                <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-                    <div class="card z-index-2 h-100">
-                        <div id="chart_div2">
-                            <script type="text/javascript">
-                                google.charts.load('current', {'packages': ['corechart']});
-                                google.charts.setOnLoadCallback(drawChart);
-
-                                function drawChart() {
-                                    var data = google.visualization.arrayToDataTable([
-                                        ['60 second', 'is used%'],
-                                        ['1', 50],
-                                        ['2', 24],
-                                        ['3', 54],
-                                        ['4', 14]
-                                    ]);
-
-                                    var options = {
-                                        title: 'DISK',
-                                        hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
-                                        vAxis: {minValue: 0}
-                                    };
-
-                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div2'));
-                                    chart.draw(data, options);
-                                }
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
