@@ -1,6 +1,6 @@
 {% extends "index_app/base.html" %}
 
-{% block title %}Хостинг docker-образов{% endblock %}
+{% block title %}Docker Hosting{% endblock %}
 
 {% block content %}
     <div class="section section-hero section-shaped"style="padding-top: 11.9%; padding-bottom: 11.9%; height: 93vh">
@@ -20,47 +20,30 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 mx-auto text-center">
-                        <h3 class="display-3"><font color="white">Хостинг Docker образов</font></h3>
+                        <h3 class="display-3"><font color="white">Docker Hosting</font></h3>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12 mx-auto text-center">
-                        <p class="lead"><font color="white">Ниже будут приведены возможные конфигурации по оперативке/памяти</font></p>
+                        <p class="lead"><font color="white">Hostings avaliable for yours containers</font></p>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4">
-                        <div class="info">
-                            <h6 class="info-title text-uppercase"><font color="white">Хостинг 1</font></h6>
-                            <p class="description opacity-8"><font color="white">Описание описание описание описание
-                                описание описание</font></p>
-                            <p class="description opacity-8"><font color="white">Описание описание описание описание
-                                описание описание
-                                <br>Описание описание описание описание описание описание</font>
-                            </p>
-                            <a href="" class="text-primary"><font color="white">Ссылка</font>
-                                <i class="ni ni-bold-right text-primary"></i>
-                            </a>
+                    {% for hosting in hostings %}
+                        <div class="col-md-4">
+                            <div class="info">
+                            <!--city cores disk_space memory_space-->
+                                <h6 class="info-title text-uppercase"><font color="white">Hosting city : {{hosting.city}}</font></h6>
+                                <p class="description opacity-8"><font color="white">Cores : {{hosting.cores}}</font></p>
+                                <p class="description opacity-8"><font color="white">Disk Space : {{hosting.disk_space}}</font></p>
+                                <p class="description opacity-8"><font color="white">Memory Space : {{hosting.memory_space}}</font></p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="info">
-                            <h6 class="info-title text-uppercase"><font color="white">Хостинг 2</font></h6>
-                            <p class="description opacity-8"><font color="white">Описание описание описание описание
-                                описание описание
-                                Описание описание описание описание описание описание</font></p>
-                            <a href="" class="text-primary"><font color="white">Ссылка</font>
-                                <i class="ni ni-bold-right text-primary"></i>
-                            </a>
-                        </div>
-                    </div>
+                    {% endfor %}
                     <div class="col-md-4">
                         <div class="info">
                             <h6 class="info-title text-uppercase"><font color="white">Soon...</font></h6>
                             <p class="description opacity-8"><font color="white">Soon...</font></p>
-                            <a href="javascript:;" class="text-primary"><font color="white">Ссылка</font>
-                                <i class="ni ni-bold-right text-primary"></i>
-                            </a>
                         </div>
                     </div>
                 </div>

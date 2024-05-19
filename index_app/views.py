@@ -11,7 +11,7 @@ from index_app.forms import UserLoginForm
 def index(request):
     """index.html"""
     hosting = list(Hosting.objects.all().values())  # выводить city cores disk_space memory_space
-    return render(request, "index_app/index.html", {"hosting": hosting})
+    return render(request, "index_app/index.html", {"hostings": hosting})
 
 
 def register_user(request):
