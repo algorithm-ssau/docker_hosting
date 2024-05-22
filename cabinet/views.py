@@ -8,8 +8,7 @@ from cabinet.forms import ImageLinkForm
 from .models import CustomUser, Hosting
 from cabinet.models import Billing, Container, ContainerStats, User_rent_docker, ContainerConfig
 from datetime import datetime
-import docker
-
+from cabinet.task import run_container
 
 # Create your views here.
 @login_required(login_url='/login')
@@ -133,10 +132,12 @@ def buy_new_container(request):
     """containers.html"""
     if request.method == "POST":
         container_form = ImageLinkForm(request.POST)
-        cont_id = request.POST.get('selected_container_id')
         if not container_form.is_valid():
             context = {"validation_errors": container_form.errors}
             # необходимо добавить id, ссылку
+        req = request.POST
+        cont_id = request.POST.get('selected_container_id')
+        image = request.POST.get('docker_image_link')
         cost = ContainerConfig.objects.get(id=cont_id).cost
         if (request.user.wallet < cost):
             # ошибка, недостаточно средств на счете
@@ -145,13 +146,6 @@ def buy_new_container(request):
             pass
             # проверить валидность ссылки docker контейнера
         # пройдены все проверки
-        user = request.user
-        #user.wallet -= cost
-        #user.save(update_fields=["wallet"])
-        #создать контейнер через python docker sdk 
-        #добавить его в таблицу container 
-        #добавить связь с юзером 
-        #создать объект покупки 
-        # User_rent_docker.objects.create()
-        # Billing.objects.create()
+        user = request.user.id
+        print(run_container.delay(user, cont_id, image))
     return redirect(request.META.get('HTTP_REFERER'))

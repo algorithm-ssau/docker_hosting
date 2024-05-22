@@ -55,7 +55,7 @@ class Container(models.Model):
     login = models.CharField(max_length=45, blank=True, null=True)
     password = models.CharField(max_length=45, blank=True, null=True)
     cores = models.IntegerField()
-    port = models.IntegerField()
+    port = models.IntegerField(null = True)
     disk_space = models.IntegerField()
     memory_space = models.IntegerField()
     is_working = models.BooleanField(default=False)
