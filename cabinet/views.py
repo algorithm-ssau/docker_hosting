@@ -149,3 +149,9 @@ def buy_new_container(request):
         user = request.user.id
         print(run_container.delay(user, cont_id, image))
     return redirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required(login_url='/login')
+def telemetry(request):
+    """containers.html"""
+    return render(request, "cabinet/telemetry.html")
