@@ -23,6 +23,19 @@
             "django": true
         },
         {
+            "name": "Run Celery Worker",
+            "type": "python",
+            "request": "launch",
+            "module": "celery",
+            "args": [
+                "--app=docker_hosting",
+                "worker",
+                "--loglevel=INFO"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Super",
             "type": "python",
             "request": "launch",
