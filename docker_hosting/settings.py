@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "index_app.apps.IndexAppConfig",
     "cabinet.apps.CabinetConfig",
     "django_cron",
+    'channels',
 ]
 AUTH_USER_MODEL = 'cabinet.CustomUser'
 MIDDLEWARE = [
@@ -76,6 +77,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'docker_hosting.wsgi.application'
+ASGI_APPLICATION = 'docker_hosting.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -145,3 +147,13 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 CELERY_TIMEZONE = "Europe/Samara"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+#Channels setting
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('localhost', 6379)],
+        },
+    }
+}
