@@ -12,8 +12,35 @@
 - [Python](https://www.python.org/)
 - [Bootstrap5](https://www.creative-tim.com/)
 - [CreativeTeam](https://www.creative-tim.com/)
+- [Celery Task Queue](https://docs.celeryq.dev/en/stable/)
+- [Django Channels](https://channels.readthedocs.io/en/latest/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Reddis](https://redis.io/docs/latest/)
 
 ## Локальный запуск
+### Локальный запуск: dev containers (рекомендуемый нужен только Docker Desktop)
+1 Запуск дев контейнера в vs code
+```sh
+cntrl + shift + p
+open folder in container
+```
+2 Ждем 
+```sh
+параметры запуска уже настроены
+после запуска начинаем работать
+```
+3 В боковой пани находим Run and debug 
+```sh
+запускаем Run Server для запуска сервера
+запускаем Migrate для миграции 
+запускаем Run Celery worker  для асинхронных задач 
+```
+4 Выход
+```sh
+cntrl shift p
+reopen localy
+```
+### Локальный запуск бе dev containers (возможный но не рекомендуемый способ)
 1 Создение виртуальной среды для python venv
 ```sh
 py -m venv .venv
@@ -26,11 +53,27 @@ py -m venv .venv
 ```sh
 pip install -r requirements.txt
 ```
-3 Запуск сервера
+4 Установить Postgres и Reddis и поменять settings.py 
 ```sh
- python manage.py runserver
+# Celery settings
+CELERY_BROKER_URL = "redis://redis:6379" 
+CELERY_RESULT_BACKEND = "redis://redis:6379"
+#заменить на 
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
 ```
-4 Выйти из виртуальной среды в любое время, просто введите 
+5 запуск celery для windows в одном терминале
+```sh
+ python -m celery -A docker_hosting  worker --pool=solo -l info
+ ```
+4 Запуск сервера в другом терминале
+```sh
+manage.py migrate
+manage.py instance_bd
+python manage.py runserver
+```
+5 Выйти из виртуальной среды в любое время, просто введите 
 ```sh
  deactivate
 ```
