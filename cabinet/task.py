@@ -60,6 +60,8 @@ def run_container(user_id, cont_id, image):
                             pay = True)
         rent.save()
         print('bd complited')
+        while(True):
+            get_container_logs.delay(container.id)
     except Exception as e:
         print(e)
     finally:
@@ -192,6 +194,8 @@ def update_container_image(container_id, image_name):
                 record.container = new_container
                 record.save()
             old_container.delete()
+
+        get_container_logs.delay(new_container_id)
     except Exception as e:
         print(e)
         return e
@@ -223,7 +227,10 @@ def change_container_working_status(container_id):
 def get_container_logs(container_id):
     try:
         client = docker.from_env()
+        print('logs find')
         container = client.containers.get(container_id)
-        return container.logs()
+        for line in container.logs(follow=True, stream=True):
+           logger.info(line.decode('utf-8').strip()) 
+           print(line.decode('utf-8').strip())
     except Exception as e:
         print(e)

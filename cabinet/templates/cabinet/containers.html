@@ -69,6 +69,22 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal" id="logsModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Continer logs {{container_id}}</h5>
+                </div>
+                <div class="modal-body">
+                    logs logs logs
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="purchaseContainerModal" tabindex="-1" role="dialog"
          aria-labelledby="purchaseContainerModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -121,7 +137,7 @@
                             Docker image link
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
-                            Container Stats
+                            Container Logs
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
                             Status
@@ -183,6 +199,11 @@
                             <td>
                                 <div class="d-flex flex-column justify-content-center">
                                     <h6 class="mb-0 text-sm">
+                                        <button type="button" class="btn btn-link change-image-link-modal-button"
+                                                data-bs-toggle="modal" data-bs-target="#logsModal"
+                                                data-id="{{ value.container_id }}">
+                                            logs
+                                        </button>
                                     </h6>
                                 </div>
                             </td>
