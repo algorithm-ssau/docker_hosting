@@ -9,6 +9,7 @@ from django.utils import timezone
 import requests
 import json
 
+print('container_run')
 @shared_task
 def run_container(user_id, cont_id, image):
     print("task")
@@ -72,7 +73,7 @@ def run_container(user_id, cont_id, image):
             )
             telemetry=db_container.id
             async_to_sync(channel_layer.group_send)(
-            "group_name", {"type": "container.telemetry", "telemetry": json.dumps({telemetry})}
+            "docker", {"type": "container.telemetry", "telemetry": json.dumps({telemetry})}
     )
 
         user = CustomUser.objects.get(id = user_id)

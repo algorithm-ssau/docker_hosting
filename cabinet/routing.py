@@ -1,6 +1,6 @@
-from django.urls import path
+from django.urls import path, re_path
 from .consumers import DockerConsumer
 
 ws_urlpatterns=[
-    path('ws/cabinet/', DockerConsumer.as_asgi())
+    re_path(r'ws/cabinet/$', DockerConsumer.as_asgi())
 ]

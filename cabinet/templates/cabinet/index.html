@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <div class="container-fluid py-4">
         <script>
-        var socket = new WebSocket('ws://localhost:8000/ws/cabinet/');
+            const socket = new WebSocket('ws://' + window.location.host + '/ws/cabinet/')
         console.log("ffff")
         socket.onmessage = function (e) {
             var djangoData = JSON.parse(e.data);
