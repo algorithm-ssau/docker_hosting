@@ -83,7 +83,7 @@
                         <div class="mb-3">
                             <label for="dockerImageLink" class="form-label">Docker Image link</label>
                             <input type="text" class="form-control" id="dockerImageLink" name="docker_image_link">
-                            <input type="hidden" id="selectedContainerId" name="selected_container_id">
+                            <input type="hidden" id="selectedConfigId" name="selected_config_id">
                         </div>
                         <button type="submit" class="btn btn-primary">Buy</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -219,14 +219,14 @@
     <div style="text-align:center">
         <div style="text-align:center">
             <div class="mb-3">
-                <label for="selectContainer" class="form-label">Choose available container and buy</label>
+                <label for="selectContainer" class="form-label">Choose available config and buy</label>
                 <select class="form-select" id="selectContainer" name="selected_container">
                     <option value="" disabled selected>Choose container</option>
-                    {% for container in available_containers %}
-                        <option value="{{ container.id }}" data-container-id="{{ container.id }}">
-                            Cores {{ container.cores }}
-                            RAM {{ container.memory_space }} Disk Memory {{ container.disk_space }}
-                            Cost {{ container.cost }} </option>
+                    {% for config in available_configs %}
+                        <option value="{{ config.id }}" data-container-id="{{ config.id }}">
+                            Cores {{ config.cores }}
+                            RAM {{ config.memory_space }} Disk Memory {{ config.disk_space }}
+                            Cost {{ config.cost }} </option>
                     {% endfor %}
                 </select>
                 <button type="button" class="btn btn-link" data-bs-toggle="modal"
@@ -241,7 +241,7 @@
             var submitButton = document.getElementById('buyContainerButton');
             var selectedOption = this.options[this.selectedIndex];
             const containerId = selectedOption.getAttribute('data-container-id');
-            const containerIdHidden = document.getElementById('selectedContainerId');
+            const containerIdHidden = document.getElementById('selectedConfigId');
             containerIdHidden.value = containerId;
             if (containerIdHidden.value !== "") {
                 submitButton.removeAttribute('disabled');
