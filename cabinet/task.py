@@ -1,7 +1,8 @@
 from celery import shared_task
 import docker
 from datetime import datetime, timedelta
-from cabinet.models import Container, User_rent_docker, CustomUser, Billing, ContainerConfig
+from cabinet.models import Container, ContainerStats, User_rent_docker, CustomUser, Billing, ContainerConfig
+from django.utils import timezone
 from django.db import transaction
 
 @shared_task
@@ -56,6 +57,62 @@ def run_container(user_id, cont_id, image):
     finally:
         return 'task done'
         
+import logging
+logger = logging.getLogger()
+import requests
+
+@shared_task
+def get_stats():
+    logger.info('task start')
+    print('stats get')
+    client = docker.from_env()
+    containers = Container.objects.all()
+    # для всех запущенных контейнеров собираем статистику
+    for db_container in containers:
+        container = client.containers.get(db_container.id)
+
+        if container.status == 'exited':
+            new_record = ContainerStats.objects.create(
+            container=db_container,
+            time=timezone.now(),
+            cpu=0,
+            ram=0,
+            disk=0,
+            )
+            new_record.save()
+            continue
+
+        # stats
+        stats = container.stats(stream=False)
+        name = stats['name']  # 'name': '/UbuntuContainer',
+        cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
+        system_delta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
+        number_of_cores = stats['cpu_stats']['online_cpus']
+        cpu_percent = (cpu_delta / system_delta) * number_of_cores * 100.0
+        time = stats['read']  # 'read': '2024-05-06T10:12:00.461046383Z'
+        date_string, microseconds_string = time.split('.')
+        # Only keep the first 6 digits of the microseconds
+        microseconds_string = microseconds_string[:6]
+        # Combine them back
+        adjusted_date_string = f"{date_string}.{microseconds_string}Z"
+        # Now parse the string with the adjusted format
+        your_datetime = datetime.strptime(adjusted_date_string, '%Y-%m-%dT%H:%M:%S.%fZ')
+        # your_datetime = timezone.make_aware(your_datetime, timezone.utc)
+        memory_usage = stats['memory_stats']['usage']  # 'usage': 897024
+        # storage_stats = stats['storage_stats']['']  # legacy
+        # create a new record to bd
+        new_record = ContainerStats.objects.create(
+            container=db_container,
+            time=your_datetime,
+            cpu=cpu_percent,
+            ram=memory_usage/1024/1024,
+            disk=0,
+                # disk=storage_stats
+            )
+        telemetry=db_container.id
+    #     async_to_sync(channel_layer.group_send)(
+    #         "group_name", {"type": "container.telemetry", "telemetry": json.dumps({telemetry})}
+    # )  
 
 @shared_task
 def start_container(cont_id):
