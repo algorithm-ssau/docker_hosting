@@ -9,24 +9,21 @@ from .models import CustomUser, Hosting
 from cabinet.models import Billing, Container, ContainerStats, User_rent_docker, ContainerConfig
 from datetime import datetime
 from cabinet.task import run_container, stop_container, start_container, pull_image, get_container_logs, update_container_image, change_container_working_status
+import json
 
 # Create your views here.
 @login_required(login_url='/login')
 def index(request):
     """index.html"""
     user = request.user
-    conts = User_rent_docker.objects.filter(user_id=user.id).all()
-    containers = {}
-    for cont in conts:
-        if cont.container_id in containers:
-            containers['cont.container_id'] += list(
-                ContainerStats.objects.select_related('container').filter(
-                    container_id=cont.container_id).all().values())
-        else:
-            containers['cont.container_id'] = list(
-                ContainerStats.objects.select_related('container').filter(
-                    container_id=cont.container_id).all().values())
-    return render(request, "cabinet/index.html")
+    containers = User_rent_docker.objects.filter(user_id=user.id).all()
+    response = [{
+        "id":container.container.id,
+        "name":container.container.docker_image_link,
+    } for container in containers]
+    return render(request, "cabinet/index.html", {
+        "containers" : json.dumps(response)
+    })
 
 
 @login_required(login_url='/login')
@@ -130,6 +127,7 @@ def buy_new_container(request):
             return redirect(request.META.get('HTTP_REFERER'))
         user = request.user.id
         run_container.delay(user, cont_id, image)
+        
     return redirect(request.META.get('HTTP_REFERER'))
 
 

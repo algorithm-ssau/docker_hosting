@@ -10,15 +10,37 @@
 
 
 {% block content %}
+
+
+<!-- {% for container in containers %}
+    <canvas id="cpu_{{container.container_id}}" width="400" height="400"></canvas>
+    <canvas id="ram_{{container.container_id}}" width="400" height="400"></canvas>
+    <canvas id="disk_{{container.container_id}}" width="400" height="400"></canvas> 
+{% endfor %}-->
+
+
+
+
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div id="dictionaryValues" class="container-fluid py-4">
 </div>
 <script>
+    let charts = {}
     const socket = new WebSocket('ws://' + window.location.host + '/ws/cabinet/')
     socket.onmessage = function (e) {
-        telemetrys = JSON.parse(e.data);
+        //хз почему но надо так иначе стринга
+        telemetrys = JSON.parse(JSON.parse(e.data));
         console.log(telemetrys);
+        for (var telemetry in telemetrys){
+            var id = telemetrys[telemetry].container_id
+            //console.log(id)
+            //console.log(charts[id])
+            charts[id].data.labels.push('')
+            charts[id].data.datasets[0].data.push(telemetrys[telemetry].cpu_percent);
+            charts[id].update();
+        }
+
     }
     var dictionary = {
             "ключ1": [1, 2, 3, 4, 5],
@@ -30,48 +52,50 @@
     var count = 0;
     var list = document.getElementById("dictionaryValues");
 
-    for (var key in dictionary) {
-        if (dictionary.hasOwnProperty(key)) {
-            var listItem = document.createElement("div");
-            listItem.classList.add("row");
-            listItem.appendChild(document.createTextNode(key));
-            list.appendChild(listItem);
+    var containers = JSON.parse('{{ containers|escapejs }}');
+    for (var container_id in containers){
+        var listItem = document.createElement("div");
+        listItem.classList.add("row");
+        listItem.appendChild(document.createTextNode(containers[container_id]['name']));
+        list.appendChild(listItem);
 
-            var listItem1 = document.createElement("div");
-            listItem1.classList.add("col-xl-4 col-sm-6 mb-xl-0 mb-4");
-            listItem.appendChild(listItem1);
+        var listItem1 = document.createElement("canvas");
+        listItem1.classList.add("col-xl-4", "col-sm-6", "mb-xl-0", "mb-4");
+        listItem.appendChild(listItem1);
 
-            var listItem2 = document.createElement("div");
-            listItem2.classList.add("card z-index-2 h-100");
-            listItem1.appendChild(listItem2);
+        var listItem2 = document.createElement("div");
+        listItem2.classList.add("card", "z-index-2", "h-100");
+        listItem1.appendChild(listItem2);
 
-            var ctx = listItem1.getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-                    datasets: [{
-                        label: 'DISK',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                        fill: true,
-                        backgroundColor: [
-                            'rgb(94, 114, 228)',
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: false
-                }
-            });
-
-            count++;
-            if (count % 3 === 0) {
-                var lineBreak = document.createElement("br");
-                list.appendChild(lineBreak);
+        var ctx = listItem1.getContext('2d');
+        charts[containers[container_id]['id']] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+                datasets: [{
+                    label: 'DISK',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    fill: true,
+                    backgroundColor: [
+                        'rgb(94, 114, 228)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: false
             }
+        })
+
+        count++;
+        if (count % 3 === 0) {
+            var lineBreak = document.createElement("br");
+            list.appendChild(lineBreak);
         }
+
+        console.log(containers[container_id])
     }
+
 </script>
 </div>
 {% endblock %}
