@@ -1,123 +1,77 @@
 {% extends "cabinet/base.html" %}
 
 {% block include_sidebar %}
-    {% include "cabinet/includes/sidebar.html" with active_telemetry="active" %}
+{% include "cabinet/includes/sidebar.html" with active_telemetry="active" %}
 {% endblock %}
 {% block include_navbar %}
-    {% include "cabinet/includes/navbar.html" with title="Telemetry" %}
+{% include "cabinet/includes/navbar.html" with title="Telemetry" %}
 {% endblock %}
 {% block title %}Telemetry{% endblock %}
 
 
 {% block content %}
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <div class="container-fluid py-4">
-        <script>
-            const socket = new WebSocket('ws://' + window.location.host + '/ws/cabinet/')
-        console.log("ffff")
-        socket.onmessage = function (e) {
-            var djangoData = JSON.parse(e.data);
-            console.log(djangoData);
-            var newGraphData = graphData.data.datasets[0].data;
-            newGraphData.shift();
-            newGraphData.push(djangoData.value);
-            graphData.data.datasets[0].data = newGraphData;
-            var DockerName=djangoData;
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div id="dictionaryValues" class="container-fluid py-4">
+</div>
+<script>
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/cabinet/')
+    socket.onmessage = function (e) {
+        telemetrys = JSON.parse(e.data);
+        console.log(telemetrys);
+    }
+    var dictionary = {
+            "ключ1": [1, 2, 3, 4, 5],
+            "ключ2": [5, 4, 3, 2, 1],
+            "ключ3": [2, 4, 6, 8, 10],
+            // добавьте сюда остальные ключи и значения
+        };
+
+    var count = 0;
+    var list = document.getElementById("dictionaryValues");
+
+    for (var key in dictionary) {
+        if (dictionary.hasOwnProperty(key)) {
+            var listItem = document.createElement("div");
+            listItem.classList.add("row");
+            listItem.appendChild(document.createTextNode(key));
+            list.appendChild(listItem);
+
+            var listItem1 = document.createElement("div");
+            listItem1.classList.add("col-xl-4 col-sm-6 mb-xl-0 mb-4");
+            listItem.appendChild(listItem1);
+
+            var listItem2 = document.createElement("div");
+            listItem2.classList.add("card z-index-2 h-100");
+            listItem1.appendChild(listItem2);
+
+            var ctx = listItem1.getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+                    datasets: [{
+                        label: 'DISK',
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        fill: true,
+                        backgroundColor: [
+                            'rgb(94, 114, 228)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false
+                }
+            });
+
+            count++;
+            if (count % 3 === 0) {
+                var lineBreak = document.createElement("br");
+                list.appendChild(lineBreak);
+            }
         }
-        </script>
-        {% for telemetry in telemetrys %}
-        <div class="row">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">{{telemetry.Name}}</p>
-            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
-                <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-                    <div class="card z-index-2 h-100">
-                        <canvas id="myChart" width="400" height="200"></canvas>
-                        <div id="chart_div">
-                            <script>
-                                const ctx = document.getElementById('myChart');
-                                let graphData = {
-                                    type: 'line',
-                                    data: {
-                                        labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-                                        datasets: [{
-                                            label: 'CPU',
-                                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                            fill: true,
-                                            backgroundColor: [
-                                                'rgb(94, 114, 228)',
-                                            ],
-                                            borderWidth: 1
-                                        }]
-                                    },
-                                    options:{}
-                                };
-                                var myChart = new Chart(ctx, graphData);
-                                myChart.update();
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
-                <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-                    <div class="card z-index-2 h-100">
-                        <div id="chart_div1">
-                            <script>
-                                const ctx1 = document.getElementById('myChart1');
-                                let graphData1 = {
-                                    type: 'line',
-                                    data: {
-                                        labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-                                        datasets: [{
-                                            label: 'RAM',
-                                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                            fill: true,
-                                            backgroundColor: [
-                                                'rgb(94, 114, 228)',
-                                            ],
-                                            borderWidth: 1
-                                        }]
-                                    },
-                                    options:{}
-                                };
-                                var myChart = new Chart(ctx, graphData1);
-                                myChart1.update();
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
-                <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-                    <div class="card z-index-2 h-100">
-                        <div id="chart_div2">
-                            <script>
-                                const ctx2 = document.getElementById('myChart2');
-                                let graphData2 = {
-                                    type: 'line',
-                                    data: {
-                                        labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-                                        datasets: [{
-                                            label: 'DISK',
-                                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                            fill: true,
-                                            backgroundColor: [
-                                                'rgb(94, 114, 228)',
-                                            ],
-                                            borderWidth: 1
-                                        }]
-                                    },
-                                    options:{}
-                                };
-                                var myChart = new Chart(ctx, graphData2);
-                                myChart2.update();
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+    }
+</script>
+</div>
 {% endblock %}
