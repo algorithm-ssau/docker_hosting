@@ -35,17 +35,18 @@
         for (var telemetry in telemetrys){
             var id = telemetrys[telemetry].container_id
             console.log(id)
+            console.log('chart id = ')
             console.log(charts[id])
             
-            charts[id].data.labels.push('')
-            charts[id].data.datasets[0].data.push(telemetrys[telemetry].cpu_percent);
-            charts[id].update();
-            charts[id+1].data.labels.push('')
-            charts[id+1].data.datasets[0].data.push(telemetrys[telemetry].ram);
-            charts[id+1].update();
-            charts[id+2].data.labels.push('')
-            charts[id+2].data.datasets[0].data.push(telemetrys[telemetry].disk);
-            charts[id+2].update();
+            charts[id + 0].data.labels.push('')
+            charts[id + 0].data.datasets[0].data.push(telemetrys[telemetry].cpu_percent);
+            charts[id + 0].update();
+            charts[id + 1].data.labels.push('')
+            charts[id + 1].data.datasets[0].data.push(telemetrys[telemetry].ram);
+            charts[id + 1].update();
+            charts[id + 2].data.labels.push('')
+            charts[id + 2].data.datasets[0].data.push(telemetrys[telemetry].disk);
+            charts[id + 2].update();
         }
 
     }
