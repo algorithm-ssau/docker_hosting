@@ -175,3 +175,16 @@ class ContainerConfig(models.Model):
     def __str__(self):
         """Строка для представления объекта MyModelName (например, в административной панели и т.д.)."""
         return 'Container_Config_' + str(self.id)
+    
+
+class ContainerLogs(models.Model):
+    id = models.AutoField(primary_key=True)
+    container = models.CharField(max_length=300)
+    logs = models.TextField()
+
+    class Meta:
+        ordering = ['id']
+
+    def __str__(self):
+        """Строка для представления объекта MyModelName (например, в административной панели и т.д.)."""
+        return 'ContainerLogs_' + str(self.id)

@@ -8,6 +8,19 @@
 {% endblock %}
 {% block title %}Containers{% endblock %}
 {% block content %}
+<script>
+    var logs = {}
+    var logs_div = {}
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/containers/')
+    console.log("ffff")
+    socket.onmessage = function (e) {
+        var djangoData = JSON.parse(e.data);
+        logs[djangoData.container] += djangoData.line
+        console.log(djangoData);
+    }
+</script>
+
+
     <div class="modal" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -69,6 +82,55 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = document.getElementById('logsModal');
+            modal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var contId = document.getElementById('cont_id').value;
+                // var contId = button.getAttribute('data-cont-id'); // Получаем значение cont_id из кнопки
+                var modalBody = modal.querySelector('.modal-body');
+                
+                var url = "{% url 'container_logs' %}?cont_id=" + contId;
+                // Создаем новый XMLHttpRequest
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Обновляем содержимое модального окна
+                            modalBody.innerHTML = xhr.responseText;
+                        } else {
+                            console.error('Ошибка при загрузке данных:', xhr.status);
+                        }
+                    }
+                };
+                
+                // Отправляем запрос на сервер
+                xhr.open('GET', url, true);
+                xhr.send();
+            });
+        });
+    </script>
+    
+
+    <div class="modal" id="logsModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Continer logs </h5>
+                    <input type="text" class="form-control" id="cont_id" value="" readonly>
+                </div>
+                <div class="modal-body">
+                    logs 
+
+                    <input type="hidden" id="cont_id" name="container_id_image">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="purchaseContainerModal" tabindex="-1" role="dialog"
          aria-labelledby="purchaseContainerModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -121,7 +183,7 @@
                             Docker image link
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
-                            Container Stats
+                            Container Logs
                         </th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps2">
                             Status
@@ -183,6 +245,11 @@
                             <td>
                                 <div class="d-flex flex-column justify-content-center">
                                     <h6 class="mb-0 text-sm">
+                                        <button type="button" class="btn btn-link change-image-link-modal-button"
+                                                data-bs-toggle="modal" data-bs-target="#logsModal"
+                                                data-id="{{ value.container_id }}">
+                                            logs
+                                        </button>
                                     </h6>
                                 </div>
                             </td>
@@ -255,6 +322,13 @@
             var modal = $(this);
             modal.find('#old_link').val(imageLink);
             modal.find('#selectedContainerIdImage').val(id);
+        });
+
+        $('#logsModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var modal = $(this);
+            modal.find('#cont_id').val(id);
         });
 
         function closeModal() {

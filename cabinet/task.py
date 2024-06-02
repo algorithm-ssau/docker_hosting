@@ -1,7 +1,7 @@
 from celery import shared_task
 import docker
 from datetime import datetime, timedelta
-from cabinet.models import Container, User_rent_docker, CustomUser, Billing, ContainerConfig, ContainerStats
+from cabinet.models import Container, User_rent_docker, CustomUser, Billing, ContainerConfig, ContainerStats, ContainerLogs
 import logging
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -60,6 +60,7 @@ def run_container(user_id, cont_id, image):
                             pay = True)
         rent.save()
         print('bd complited')
+        get_container_logs.delay(container.id)
     except Exception as e:
         print(e)
     finally:
@@ -170,7 +171,7 @@ def update_container_image(container_id, image_name):
 
         new_container = client.containers.run(image_name, name=old_container.name, detach=True) # запускаем новый контейнер с новым образом
         new_container_id = new_container.id 
-
+        get_container_logs.delay(new_container_id)
         old_container = Container.objects.get(id=container_id) # заменяем старые записи о контейнере новыми
         with transaction.atomic():
             new_container = Container.objects.create(
@@ -222,8 +223,20 @@ def change_container_working_status(container_id):
 @shared_task
 def get_container_logs(container_id):
     try:
+        channel_layer = get_channel_layer()
         client = docker.from_env()
+        print('logs find')
         container = client.containers.get(container_id)
-        return container.logs()
+        for line in container.logs(follow=True, stream=True):
+            logger.info(line.decode('utf-8').strip())
+            async_to_sync(channel_layer.group_send)(
+                "docker_logs", {"type": "container.logs", "logs": json.dumps({
+                    "container": container_id,
+                    "line": line.decode('utf-8').strip()
+                    })}
+            )
+            container_logs = ContainerLogs.objects.create(container = container_id, logs = line)
+            container_logs.save()
+            print(line.decode('utf-8').strip())
     except Exception as e:
         print(e)

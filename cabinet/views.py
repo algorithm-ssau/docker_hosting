@@ -6,9 +6,10 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from cabinet.forms import ImageLinkForm, ConfigLinkForm
 from .models import CustomUser, Hosting
-from cabinet.models import Billing, Container, ContainerStats, User_rent_docker, ContainerConfig
+from cabinet.models import Billing, Container, ContainerStats, User_rent_docker, ContainerConfig, ContainerLogs
 from datetime import datetime
 from cabinet.task import run_container, stop_container, start_container, pull_image, get_container_logs, update_container_image, change_container_working_status
+from django.http import JsonResponse
 import json
 
 # Create your views here.
@@ -130,7 +131,21 @@ def buy_new_container(request):
         
     return redirect(request.META.get('HTTP_REFERER'))
 
-
+@login_required(login_url='/login')
+def container_logs(request):
+    """logs.html"""
+    if request.method == 'GET':
+        cont_id = request.GET.get('cont_id')  # Получаем значение cont_id из запроса
+        # Здесь можно выполнить какие-то операции с cont_id, например, получить данные из базы данных
+        log_data = ContainerLogs.objects.filter(container = cont_id).all().values()
+        # Возвращаем JSON-ответ с данными
+        data = {
+            'container_id': cont_id,
+            'logs': list(log_data),
+            # Здесь можно включить другие данные, которые вы хотите передать на клиент
+        }
+        return JsonResponse(data)
+    
 @login_required(login_url='/login')
 def telemetry(request):
     """containers.html"""

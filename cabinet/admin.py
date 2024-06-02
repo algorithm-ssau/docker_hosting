@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 
-from .models import Hosting, Container, User_rent_docker, Billing, ContainerStats, ContainerConfig
+from .models import Hosting, Container, User_rent_docker, Billing, ContainerStats, ContainerConfig, ContainerLogs
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
 
@@ -25,3 +25,4 @@ admin.site.register(User_rent_docker)
 admin.site.register(Billing)
 admin.site.register(ContainerStats)
 admin.site.register(ContainerConfig)
+admin.site.register(ContainerLogs)
