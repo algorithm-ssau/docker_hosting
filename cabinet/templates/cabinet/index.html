@@ -34,63 +34,69 @@
         console.log(telemetrys);
         for (var telemetry in telemetrys){
             var id = telemetrys[telemetry].container_id
-            //console.log(id)
-            //console.log(charts[id])
+            console.log(id)
+            console.log(charts[id])
+            
             charts[id].data.labels.push('')
             charts[id].data.datasets[0].data.push(telemetrys[telemetry].cpu_percent);
             charts[id].update();
+            charts[id+1].data.labels.push('')
+            charts[id+1].data.datasets[0].data.push(telemetrys[telemetry].ram);
+            charts[id+1].update();
+            charts[id+2].data.labels.push('')
+            charts[id+2].data.datasets[0].data.push(telemetrys[telemetry].disk);
+            charts[id+2].update();
         }
 
     }
-    var dictionary = {
-            "ключ1": [1, 2, 3, 4, 5],
-            "ключ2": [5, 4, 3, 2, 1],
-            "ключ3": [2, 4, 6, 8, 10],
-            // добавьте сюда остальные ключи и значения
-        };
-
     var count = 0;
     var list = document.getElementById("dictionaryValues");
 
     var containers = JSON.parse('{{ containers|escapejs }}');
     for (var container_id in containers){
+
         var listItem = document.createElement("div");
         listItem.classList.add("row");
-        listItem.appendChild(document.createTextNode(containers[container_id]['name']));
         list.appendChild(listItem);
 
-        var listItem1 = document.createElement("canvas");
-        listItem1.classList.add("col-xl-4", "col-sm-6", "mb-xl-0", "mb-4");
-        listItem.appendChild(listItem1);
+        var title = document.createElement("p");
+        title.classList.add("text-sm", "mb-0", "text-uppercase", "font-weight-bold");
+        title.textContent = containers[container_id]['name'];
+        listItem.appendChild(title);
 
-        var listItem2 = document.createElement("div");
-        listItem2.classList.add("card", "z-index-2", "h-100");
-        listItem1.appendChild(listItem2);
+        var chartsContainer = document.createElement("div"); // Создаем общий контейнер для графиков
+        chartsContainer.classList.add("col-xl-100", "col-sm-100", "d-flex", "justify-content-around"); // Используем flexbox для выравнивания графиков
+        listItem.appendChild(chartsContainer);
+        
+        const chartLabel=["CPU", "RAM", "DISK"]
 
-        var ctx = listItem1.getContext('2d');
-        charts[containers[container_id]['id']] = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-                datasets: [{
-                    label: 'DISK',
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    fill: true,
-                    backgroundColor: [
-                        'rgb(94, 114, 228)',
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: false
+        for (var i = 0; i < 3; i++) {
+            var canvas = document.createElement("canvas");
+            canvas.classList.add("mb-4");
+            chartsContainer.appendChild(canvas);
+
+            var ctx = canvas.getContext('2d');
+
+            if (typeof Chart !== 'undefined') {
+                charts[containers[container_id]['id']+i] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+                        datasets: [{
+                            label: chartLabel[i],
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            fill: true,
+                            backgroundColor: [
+                                'rgb(94, 114, 228)',
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false
+                    }
+                });
             }
-        })
-
-        count++;
-        if (count % 3 === 0) {
-            var lineBreak = document.createElement("br");
-            list.appendChild(lineBreak);
         }
 
         console.log(containers[container_id])
