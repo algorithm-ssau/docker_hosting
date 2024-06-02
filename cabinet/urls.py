@@ -11,4 +11,5 @@ urlpatterns = [
     path('change_image_status/', views.change_image_link, name='change_image_link'),
     path('buy_new_container/', views.buy_new_container, name='buy_new_container'),
     path('telemetry/', views.telemetry, name='cabinet_telemetry'),
+    path('container_logs/', views.container_logs, name = 'container_logs')
 ]
