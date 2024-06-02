@@ -1,12 +1,20 @@
 from celery import shared_task
 import docker
 from datetime import datetime, timedelta
-from cabinet.models import Container, ContainerStats, User_rent_docker, CustomUser, Billing, ContainerConfig
+from cabinet.models import Container, User_rent_docker, CustomUser, Billing, ContainerConfig, ContainerStats
+import logging
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from django.utils import timezone
+import requests
+import json
 from django.utils import timezone
 from django.db import transaction
 
+print('container_run')
 @shared_task
 def run_container(user_id, cont_id, image):
+    print("task")
     try:
         client = docker.from_env()
         pull_image(image)
@@ -63,10 +71,12 @@ import requests
 
 @shared_task
 def get_stats():
+    channel_layer = get_channel_layer()
     logger.info('task start')
     print('stats get')
     client = docker.from_env()
     containers = Container.objects.all()
+    info = []
     # для всех запущенных контейнеров собираем статистику
     for db_container in containers:
         container = client.containers.get(db_container.id)
@@ -107,12 +117,18 @@ def get_stats():
             cpu=cpu_percent,
             ram=memory_usage/1024/1024,
             disk=0,
-                # disk=storage_stats
+            # disk=storage_stats
             )
-        telemetry=db_container.id
-    #     async_to_sync(channel_layer.group_send)(
-    #         "group_name", {"type": "container.telemetry", "telemetry": json.dumps({telemetry})}
-    # )  
+        info.append({
+            "container_id" : db_container.id,
+            "cpu_percent": new_record.cpu,
+            "ram": new_record.ram,
+            "disk": new_record.disk
+        })
+
+    async_to_sync(channel_layer.group_send)(
+        "docker", {"type": "container.telemetry", "telemetry": json.dumps(info)}
+    )
 
 @shared_task
 def start_container(cont_id):

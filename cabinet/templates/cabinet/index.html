@@ -11,35 +11,49 @@
 
 {% block content %}
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <div class="container-fluid py-4">
+        <script>
+            const socket = new WebSocket('ws://' + window.location.host + '/ws/cabinet/')
+        console.log("ffff")
+        socket.onmessage = function (e) {
+            var djangoData = JSON.parse(e.data);
+            console.log(djangoData);
+            var newGraphData = graphData.data.datasets[0].data;
+            newGraphData.shift();
+            newGraphData.push(djangoData.value);
+            graphData.data.datasets[0].data = newGraphData;
+            var DockerName=djangoData;
+        }
+        </script>
+        {% for telemetry in telemetrys %}
         <div class="row">
-            <p class="text-sm mb-0 text-uppercase font-weight-bold">DockerName</p>
+            <p class="text-sm mb-0 text-uppercase font-weight-bold">{{telemetry.Name}}</p>
             <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
                 <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
                     <div class="card z-index-2 h-100">
+                        <canvas id="myChart" width="400" height="200"></canvas>
                         <div id="chart_div">
-                            <script type="text/javascript">
-                                google.charts.load('current', {'packages': ['corechart']});
-                                google.charts.setOnLoadCallback(drawChart);
-
-                                function drawChart() {
-                                    var data = google.visualization.arrayToDataTable([
-                                        ['60 second', 'is used%'],
-                                        ['1', 50],
-                                        ['2', 24],
-                                        ['3', 54],
-                                        ['4', 14]
-                                    ]);
-
-                                    var options = {
-                                        title: 'DISK',
-                                        hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
-                                        vAxis: {minValue: 0}
-                                    };
-
-                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-                                    chart.draw(data, options);
-                                }
+                            <script>
+                                const ctx = document.getElementById('myChart');
+                                let graphData = {
+                                    type: 'line',
+                                    data: {
+                                        labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+                                        datasets: [{
+                                            label: 'CPU',
+                                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            fill: true,
+                                            backgroundColor: [
+                                                'rgb(94, 114, 228)',
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options:{}
+                                };
+                                var myChart = new Chart(ctx, graphData);
+                                myChart.update();
                             </script>
                         </div>
                     </div>
@@ -49,28 +63,26 @@
                 <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
                     <div class="card z-index-2 h-100">
                         <div id="chart_div1">
-                            <script type="text/javascript">
-                                google.charts.load('current', {'packages': ['corechart']});
-                                google.charts.setOnLoadCallback(drawChart);
-
-                                function drawChart() {
-                                    var data = google.visualization.arrayToDataTable([
-                                        ['60 second', 'is used%'],
-                                        ['1', 50],
-                                        ['2', 24],
-                                        ['3', 54],
-                                        ['4', 14]
-                                    ]);
-
-                                    var options = {
-                                        title: 'DISK',
-                                        hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
-                                        vAxis: {minValue: 0}
-                                    };
-
-                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div1'));
-                                    chart.draw(data, options);
-                                }
+                            <script>
+                                const ctx1 = document.getElementById('myChart1');
+                                let graphData1 = {
+                                    type: 'line',
+                                    data: {
+                                        labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+                                        datasets: [{
+                                            label: 'RAM',
+                                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            fill: true,
+                                            backgroundColor: [
+                                                'rgb(94, 114, 228)',
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options:{}
+                                };
+                                var myChart = new Chart(ctx, graphData1);
+                                myChart1.update();
                             </script>
                         </div>
                     </div>
@@ -80,33 +92,32 @@
                 <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
                     <div class="card z-index-2 h-100">
                         <div id="chart_div2">
-                            <script type="text/javascript">
-                                google.charts.load('current', {'packages': ['corechart']});
-                                google.charts.setOnLoadCallback(drawChart);
-
-                                function drawChart() {
-                                    var data = google.visualization.arrayToDataTable([
-                                        ['60 second', 'is used%'],
-                                        ['1', 50],
-                                        ['2', 24],
-                                        ['3', 54],
-                                        ['4', 14]
-                                    ]);
-
-                                    var options = {
-                                        title: 'DISK',
-                                        hAxis: {title: '60 second', titleTextStyle: {color: '#333'}},
-                                        vAxis: {minValue: 0}
-                                    };
-
-                                    var chart = new google.visualization.AreaChart(document.getElementById('chart_div2'));
-                                    chart.draw(data, options);
-                                }
+                            <script>
+                                const ctx2 = document.getElementById('myChart2');
+                                let graphData2 = {
+                                    type: 'line',
+                                    data: {
+                                        labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+                                        datasets: [{
+                                            label: 'DISK',
+                                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                            fill: true,
+                                            backgroundColor: [
+                                                'rgb(94, 114, 228)',
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options:{}
+                                };
+                                var myChart = new Chart(ctx, graphData2);
+                                myChart2.update();
                             </script>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
 {% endblock %}
