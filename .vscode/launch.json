@@ -36,6 +36,19 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "Run Celery Beat",
+            "type": "python",
+            "request": "launch",
+            "module": "celery",
+            "args": [
+                "--app=docker_hosting",
+                "beat",
+                "--loglevel=INFO"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Super",
             "type": "python",
             "request": "launch",
