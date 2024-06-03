@@ -163,5 +163,9 @@ CELERY_BEAT_SCHEDULE = {
     "get_stats": {
         "task": "cabinet.task.get_stats",
         "schedule": 15.0
-    }
+    },
+    "check_container_working_status": {
+        "task": "cabinet.task.check_container_working_status",
+        "schedule": 30.0,  # Every 30 seconds
+    },
 }

@@ -137,10 +137,10 @@ def container_logs(request):
     if request.method == 'GET':
         cont_id = request.GET.get('cont_id')  # Получаем значение cont_id из запроса
         # Здесь можно выполнить какие-то операции с cont_id, например, получить данные из базы данных
-        log_data = ContainerLogs.objects.filter(container = cont_id).all().values()
+        log_data = ContainerLogs.objects.filter(container = cont_id).all().values_list('logs', flat=True)
         # Возвращаем JSON-ответ с данными
         data = {
-            'container_id': cont_id,
+            #'container_id': cont_id,
             'logs': list(log_data),
             # Здесь можно включить другие данные, которые вы хотите передать на клиент
         }

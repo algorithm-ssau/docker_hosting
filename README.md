@@ -12,6 +12,7 @@
 - [Python](https://www.python.org/)
 - [Bootstrap5](https://www.creative-tim.com/)
 - [CreativeTeam](https://www.creative-tim.com/)
+- [Python Docker SDK](https://docker-py.readthedocs.io/)
 - [Celery Task Queue](https://docs.celeryq.dev/en/stable/)
 - [Django Channels](https://channels.readthedocs.io/en/latest/)
 - [PostgreSQL](https://www.postgresql.org/)
@@ -19,6 +20,11 @@
 
 ## Локальный запуск
 ### Локальный запуск: dev containers (рекомендуемый нужен только Docker Desktop)
+```sh
+Установите Docker Desktop 
+Воспользуйтесь руководством по установки прокси huecker (https://huecker.io/) или используйте ВПН
+Откройте проект в VS code и оставьте Docker Desktop открытым
+```
 1 Запуск дев контейнера в vs code
 ```sh
 cntrl + shift + p
@@ -33,7 +39,7 @@ open folder in container
 ```sh
 запускаем Run Server для запуска сервера
 запускаем Migrate для миграции 
-запускаем Run Celery worker  для асинхронных задач 
+запускаем Run Celery worker  и Run Celery Beat для асинхронных задач 
 ```
 4 Выход
 ```sh
@@ -41,13 +47,17 @@ cntrl shift p
 reopen localy
 ```
 ### Локальный запуск бе dev containers (возможный но не рекомендуемый способ)
+```sh
+Установите Docker Desktop 
+Воспользуйтесь руководством по установки прокси huecker (https://huecker.io/) или используйте ВПН
+```
 1 Создение виртуальной среды для python venv
 ```sh
 py -m venv .venv
 ```
 2 Активировать venv
 ```sh
- env\Scripts\Activate.ps1
+ .venv\Scripts\Activate.ps1
 ```
 3 Установка зависимостей 
 ```sh

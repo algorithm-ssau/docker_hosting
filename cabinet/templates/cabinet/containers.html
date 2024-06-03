@@ -99,7 +99,12 @@
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 200) {
                             // Обновляем содержимое модального окна
-                            modalBody.innerHTML = xhr.responseText;
+                           // modalBody.innerHTML = xhr.responseText;
+                            var response = JSON.parse(xhr.responseText);
+                            console.log(response)
+                            var logs = response.logs.join('<br>'); // Assuming 'text' contains the log content
+                            console.log(logs)
+                            modalBody.innerHTML = logs;
                         } else {
                             console.error('Ошибка при загрузке данных:', xhr.status);
                         }
@@ -258,7 +263,7 @@
                                     <form method="post" action={% url "change_container_status" %}>
                                         {% csrf_token %}
                                         <input type="hidden" name="container_id" value={{ value.container_id }}>
-                                        {% if value.is_working > 0 %}
+                                        {% if value.is_working %}
                                             <h6 class="text-xs font-weight-bold mb-0"><font
                                                     color="green">Working</font></h6>
                                             <button type="submit" class="btn btn-primary" name="container_status"

@@ -64,7 +64,9 @@ def run_container(user_id, cont_id, image):
     except Exception as e:
         print(e)
     finally:
+        client.close()
         return 'task done'
+        
         
 import logging
 logger = logging.getLogger()
@@ -130,6 +132,7 @@ def get_stats():
     async_to_sync(channel_layer.group_send)(
         "docker", {"type": "container.telemetry", "telemetry": json.dumps(info)}
     )
+    client.close()
 
 @shared_task
 def start_container(cont_id):
@@ -138,11 +141,13 @@ def start_container(cont_id):
         container = client.containers.get(cont_id)
         container.start() ## 
         cont = Container.objects.get(id=cont_id)
-        cont.is_working = True if container.status == 'running' else False
+        cont.is_working = True 
         cont.save(update_fields=["is_working"])
         print('start_container done')
+        client.close()
     except Exception as e:
         print(e)
+    
 
 
 @shared_task
@@ -152,9 +157,10 @@ def stop_container(cont_id):
         container = client.containers.get(cont_id)
         container.stop()
         cont = Container.objects.get(id=cont_id)
-        cont.is_working = True if container.status == 'running' else False
+        cont.is_working = False
         cont.save(update_fields=["is_working"])
         print('stop_container done')
+        client.close()
     except Exception as e:
         print(e)
 
@@ -193,6 +199,7 @@ def update_container_image(container_id, image_name):
                 record.container = new_container
                 record.save()
             old_container.delete()
+        client.close()
     except Exception as e:
         print(e)
         return e
@@ -204,6 +211,7 @@ def pull_image(image):
     try:
         client = docker.from_env()
         client.images.pull(image)
+        client.close()
     except:
         print('not valid image link')
         raise Exception("Not valid docker image link")
@@ -218,6 +226,29 @@ def change_container_working_status(container_id):
             start_container.delay(container_id)
     except Exception as e:
         print(e)
+
+@shared_task
+def check_container_working_status():
+    try:
+        client = docker.from_env()
+        containers = Container.objects.all()
+        
+        # для всех запущенных контейнеров собираем статистику
+        for db_container in containers:
+            container = client.containers.get(db_container.id)
+            print('status check')
+            if container.status == 'exited':
+                db_container.is_working = False
+                db_container.save()
+                print('status false')
+            else:
+                db_container.is_working = True
+                db_container.save()
+                print('status true')
+    except Exception as e:
+        print(e)
+    finally:
+        client.close()
 
 
 @shared_task
@@ -238,5 +269,6 @@ def get_container_logs(container_id):
             container_logs = ContainerLogs.objects.create(container = container_id, logs = line)
             container_logs.save()
             print(line.decode('utf-8').strip())
+        client.close()
     except Exception as e:
         print(e)
