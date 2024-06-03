@@ -18,6 +18,10 @@
 - [PostgreSQL](https://www.postgresql.org/)
 - [Reddis](https://redis.io/docs/latest/)
 
+## Результат 
+Видео работы сайта доступно по ссылке: https://youtu.be/TDW2EhnFuPQ
+
+В связи с блокировкой Docker Hub для российских пользователей развертывание проекта откладывается на неопределенный срок
 ## Локальный запуск
 ### Локальный запуск: dev containers (рекомендуемый нужен только Docker Desktop)
 ```sh
